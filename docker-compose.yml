@@ -8,6 +8,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    networks:
+        - obligatorio-network
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
     depends_on:
@@ -15,13 +17,22 @@ services:
     command: sh -c "while ! nc -z db 5432; do sleep 1; done; npm run dev"
   
   db:
-    image: postgres:13
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: obligatorio
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ~/apps/postgres:/var/lib/postgresql/data
+    networks:
+      - obligatorio-network
 
 volumes:
   pgdata:
+
+networks:
+  obligatorio-network:
+    driver: bridge  

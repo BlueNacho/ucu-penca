@@ -1,4 +1,4 @@
-## Getting Started
+## Como empezar
 
 1. Primer paso, entrar a `.env.example`, renombrar el archivo a `.env.local` y completar los datos:
 

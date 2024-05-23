@@ -26,7 +26,7 @@ La aplicación web se abre por defecto en [http://localhost:3000](http://localho
 
 Testear la conexión a la base de datos enseguida despues del segundo paso.
 
-<div style="width: 200px;">
+<div style="width: 100px;">
   <img src="docs/test_connection_datagrip.jpg" alt="DataGrip Test Connection">
 </div>
 

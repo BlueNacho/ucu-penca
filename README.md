@@ -21,3 +21,7 @@ npm run seed
 ```
 
 La aplicación web se abre por defecto en [http://localhost:3000](http://localhost:3000).
+
+## Opcional
+
+Testear la conección a la base de datos enseguida despues del segundo paso.

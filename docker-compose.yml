@@ -11,7 +11,7 @@ services:
     networks:
         - obligatorio-network
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+      - DATABASE_URL=${POSTGRES_URL}
     depends_on:
       - db
     command: sh -c "while ! nc -z db 5432; do sleep 1; done; npm run dev"
@@ -22,9 +22,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: obligatorio
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
     networks:

@@ -20,4 +20,4 @@ docker compose up
 npm run seed
 ```
 
-La aplicación web, por defecto se abre en [http://localhost:3000](http://localhost:3000).
+La aplicación web se abre por defecto en [http://localhost:3000](http://localhost:3000).

@@ -88,7 +88,8 @@ const seedDatabase = async () => {
       CREATE TABLE IF NOT EXISTS Prediction (
         match_id UUID NOT NULL,
         user_id UUID NOT NULL,
-        result VARCHAR(255) NOT NULL,
+        home_team_goals INT DEFAULT 0,
+        away_team_goals INT DEFAULT 0,
         PRIMARY KEY (match_id, user_id),
         FOREIGN KEY (match_id) REFERENCES Match(id),
         FOREIGN KEY (user_id) REFERENCES Users(id)

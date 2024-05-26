@@ -15,10 +15,25 @@ const phases = [
 ];
 
 const teams = [
-  { name: "Argentina", phase: "Fase de grupos" },
-  { name: "Brasil", phase: "Fase de grupos" },
-  { name: "Chile", phase: "Fase de grupos" },
-  { name: "Uruguay", phase: "Fase de grupos" },
+  { name: "Argentina", code: "ar", phase: "Fase de grupos", group_name: "A" },
+  { name: "Peru", code: "pe", phase: "Fase de grupos", group_name: "A" },
+  { name: "Chile", code: "cl", phase: "Fase de grupos", group_name: "A" },
+  { name: "Canada", code: "ca", phase: "Fase de grupos", group_name: "A" },
+
+  { name: "Mexico", code: "mx", phase: "Fase de grupos", group_name: "B" },
+  { name: "Ecuador", code: "ec", phase: "Fase de grupos", group_name: "B" },
+  { name: "Venezuela", code: "ve", phase: "Fase de grupos", group_name: "B" },
+  { name: "Jamaica", code: 'jm', phase: "Fase de grupos", group_name: "B" },
+
+  { name: "Estados Unidos", code: 'us', phase: "Fase de grupos", group_name: "C" },
+  { name: "Uruguay", code: 'uy', phase: "Fase de grupos", group_name: "C" },
+  { name: "Panama", code: 'pa', phase: "Fase de grupos", group_name: "C" },
+  { name: "Bolivia", code: 'bo', phase: "Fase de grupos", group_name: "C" },
+
+  { name: "Brasil", code: 'br', phase: "Fase de grupos", group_name: "D" },
+  { name: "Colombia", code: 'co', phase: "Fase de grupos", group_name: "D" },
+  { name: "Paraguay", code: 'py', phase: "Fase de grupos", group_name: "D" },
+  { name: "Costa Rica", code: 'cr', phase: "Fase de grupos", group_name: "D" },
 ];
 
 const users = [

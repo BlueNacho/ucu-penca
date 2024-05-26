@@ -32,10 +32,21 @@ const seedDatabase = async () => {
     `);
 
     await client.query(`
+      DO $$
+      BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'group_name') THEN
+              CREATE TYPE group_name AS ENUM ('A', 'B', 'C', 'D');
+          END IF;
+      END$$;
+    `);
+
+    await client.query(`
       CREATE TABLE IF NOT EXISTS Team (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
+        code VARCHAR(4) NOT NULL,
         phase VARCHAR(255) NOT NULL,
+        group_name group_name NOT NULL,
         FOREIGN KEY (phase) REFERENCES Phase(name)
       );
     `);
@@ -115,8 +126,8 @@ const seedDatabase = async () => {
     // Insertar teams
     for (const team of data.teams) {
       await client.query(
-        "INSERT INTO Team (name, phase) VALUES ($1, $2) ON CONFLICT DO NOTHING",
-        [team.name, team.phase]
+        "INSERT INTO Team (name, code, phase, group_name) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
+        [team.name, team.code, team.phase, team.group_name]
       );
     }
 

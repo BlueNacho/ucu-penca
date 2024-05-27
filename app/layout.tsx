@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
-import { inter } from "@/components/my-ui/fonts";
+import { inter } from "@/components/ui/fonts";
 
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-tl from-background to-primary dark:from-background dark:to-primary/30 bg-no-repeat`}>
+      <body className={`${inter.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

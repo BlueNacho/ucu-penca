@@ -1,25 +1,13 @@
-'use client';
+'use client'
 
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { useState, ChangeEvent } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -29,41 +17,36 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { fetchTeams } from "@/lib/data";
-import { Team } from "@/lib/definitions";
 
-interface Fields {
-    name: string;
-    lastname: string;
-    email: string;
-    password: string;
-}
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState, ChangeEvent } from "react";
+import { Progress } from "@/components/ui/progress";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { TabsContent } from "@/components/ui/tabs";
+import { Career, Team } from "@/lib/definitions";
+import SelectCountry from "../select-country";
 
-interface FieldsIncremented {
-    name: boolean;
-    lastname: boolean;
-    email: boolean;
-    password: boolean;
-}
+export default function RegisterForm({ careers, teams }: { careers: Career[], teams: Team[] }) {
 
-interface FormProps {
-    fields: Fields;
-    handleProgress: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-interface RegisterFormProps extends FormProps {
-    progress: number;
-}
-
-export function AuthForm({ teams }: { teams: Team[] }) {
+    const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(0);
-    const [fields, setFields] = useState<Fields>({
+
+    const handleNext = () => {
+        if (step === 1) {
+            setStep(2);
+        } else {
+            setStep(1);
+        }
+    }
+  
+    const [fields, setFields] = useState({
         name: '',
         lastname: '',
         email: '',
         password: '',
     });
-    const [fieldsIncremented, setFieldsIncremented] = useState<FieldsIncremented>({
+    const [fieldsIncremented, setFieldsIncremented] = useState({
         name: false,
         lastname: false,
         email: false,
@@ -72,7 +55,7 @@ export function AuthForm({ teams }: { teams: Team[] }) {
 
     const handleProgress = (event: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = event.target;
-        const incremented = fieldsIncremented[id as keyof FieldsIncremented];
+        const incremented = fieldsIncremented;
 
         if (value.length > 0 && !incremented) {
             setProgress((prevProgress) => prevProgress + 12.5);
@@ -93,30 +76,6 @@ export function AuthForm({ teams }: { teams: Team[] }) {
             [id]: value,
         }));
     };
-
-    return (
-        <Tabs defaultValue="login" className="w-[80%]">
-            <TabsList className="bg-card gap-1 flex flex-row border">
-                <TabsTrigger className="w-1/2" value="login">Iniciar Sesión</TabsTrigger>
-                <TabsTrigger className="w-1/2" value="register">Registrarse</TabsTrigger>
-            </TabsList>
-            <LoginForm />
-            <RegisterForm fields={fields} handleProgress={handleProgress} progress={progress} teams={teams} />
-        </Tabs>
-    );
-}
-
-export function RegisterForm({ fields, handleProgress, progress, teams } : { fields: Fields, handleProgress: (event: ChangeEvent<HTMLInputElement>) => void, progress: number, teams: Team[] }) {
-
-    const [step, setStep] = useState(1);
-
-    const handleNext = () => {
-        if (step === 1) {
-            setStep(2);
-        } else {
-            setStep(1);
-        }
-    }
 
     const allFieldsFilled = () => {
         return fields.name && fields.lastname && fields.email && fields.password;
@@ -158,33 +117,33 @@ export function RegisterForm({ fields, handleProgress, progress, teams } : { fie
                             <div className="space-y-1">
                                 <Label htmlFor="email">Carrera</Label>
                                 <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Seleccione un equipo" />
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccionar carrera" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Equipos</SelectLabel>
-                                            {teams.map((team: Team) => (
-                                                <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
+                                            <SelectLabel>Carreras</SelectLabel>
+                                            {careers.map((career, index) => (
+                                                <SelectItem key={index} value={career.id.toString()}>{career.name}</SelectItem>
                                             ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
+
                             </div>
                             <div className="grid w-full grid-cols-2 gap-2">
                                 <div className="space-y-1">
-                                    <Label htmlFor="name">Campeón</Label>
-                                    <Input onChange={handleProgress} id="name" type="text" placeholder="Nombre" value={fields.name} />
+                                    <Label htmlFor="name">&#x1f947; Campeón</Label>
+                                    <SelectCountry teams={teams}/>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label htmlFor="lastname">Sub-campeón</Label>
-                                    <Input onChange={handleProgress} id="lastname" type="text" placeholder="Apellido" value={fields.lastname} />
+                                    <Label htmlFor="lastname">&#x1f948; Sub-campeón</Label>
+                                    <SelectCountry teams={teams}/>
                                 </div>
                             </div>
                         </>
                     )}
                 </CardContent>
-
 
                 <CardFooter className="gap-2">
                     {step === 2 && (
@@ -196,31 +155,6 @@ export function RegisterForm({ fields, handleProgress, progress, teams } : { fie
                     {step === 1 && (
                         <Button disabled={!allFieldsFilled()} onClick={handleNext}>Siguiente <ChevronRight /></Button>
                     )}
-                </CardFooter>
-            </Card>
-        </TabsContent>
-    );
-}
-
-export function LoginForm() {
-    return (
-        <TabsContent value="login">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Iniciar Sesión</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div className="space-y-1">
-                        <Label htmlFor="email">Correo</Label>
-                        <Input id="email" type="email" placeholder="Correo electrónico" />
-                    </div>
-                    <div className="space-y-1">
-                        <Label htmlFor="password">Contraseña</Label>
-                        <Input id="password" type="password" placeholder="Contraseña" />
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Iniciar Sesión</Button>
                 </CardFooter>
             </Card>
         </TabsContent>

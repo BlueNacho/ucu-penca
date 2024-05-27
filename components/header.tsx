@@ -1,4 +1,4 @@
-import Logo from "./my-ui/logo";
+import Logo from "./logo";
 
 export default function Header() {
     return (

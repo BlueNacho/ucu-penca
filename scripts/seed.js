@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const data = require("./population-data");
 
 const client = new Client({
-  connectionString: process.env.POSTGRES_URL,
+  connectionString: process.env.SEED_POSTGRES_URL,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
   user: process.env.POSTGRES_USER,
@@ -47,6 +47,7 @@ const seedDatabase = async () => {
         code VARCHAR(4) NOT NULL,
         phase VARCHAR(255) NOT NULL,
         group_name group_name NOT NULL,
+        group_score INT DEFAULT 0,
         FOREIGN KEY (phase) REFERENCES Phase(name)
       );
     `);

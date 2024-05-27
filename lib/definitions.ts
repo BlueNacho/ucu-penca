@@ -14,8 +14,10 @@ export type User = {
 export type Team = {
     id: string;
     name: string;
-    group: string;
+    code: string;
     phase: string;
+    group_name: string;
+    group_score: string;
 };
 
 export type Match = {
@@ -41,7 +43,7 @@ export type Phase = {
     name: string;
 };
 
-export type Carrer = {
+export type Career = {
     id: number;
     name: string;
 };

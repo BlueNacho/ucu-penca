@@ -6,7 +6,7 @@ import {
     Match,
     Prediction,
     Phase,
-    Carrer
+    Career
  } from "./definitions";
 
 const { Client } = require("pg");
@@ -22,9 +22,6 @@ const client = new Client({
 client.connect();
 
 export async function fetchTeams() {
-    
-    noStore();
-
     try {
         const res = await client.query("SELECT * FROM team");
         return res.rows as Team[];
@@ -33,3 +30,14 @@ export async function fetchTeams() {
         throw error;
     }
 }
+
+export async function fetchCarreers() {
+    try {
+        const res = await client.query("SELECT * FROM career");
+        return res.rows as Career[];
+    } catch (error) {
+        console.error("Error fetching carreers:", error);
+        throw error;
+    }
+}
+

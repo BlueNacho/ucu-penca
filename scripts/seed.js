@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const data = require("./population-data");
 
 const client = new Client({
-  connectionString: process.env.POSTGRE_URL,
+  connectionString: process.env.POSTGRES_URL,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
   user: process.env.POSTGRES_USER,

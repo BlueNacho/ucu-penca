@@ -1,8 +1,12 @@
 import Logo from "@/components/my-ui/logo";
 import { Button } from "@/components/ui/button";
 import { AuthForm } from "@/components/auth-form";
+import { fetchTeams } from "@/lib/data";
 
-export default function Page() {
+export default async function Page() {
+  
+  const teams = await fetchTeams();
+
   return (
     <main className="min-h-[512px] h-screen w-full">
       <div className="lg:hidden h-full max-w-full flex flex-col items-center justify-center">
@@ -48,7 +52,7 @@ export default function Page() {
 
           </div>
           <div className="w-1/2 h-full z-10 flex flex-col items-center justify-center py-10">
-            <AuthForm />
+            <AuthForm teams={teams} />
           </div>
         </div>
       </div>

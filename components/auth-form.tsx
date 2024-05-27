@@ -29,6 +29,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { fetchTeams } from "@/lib/data";
+import { Team } from "@/lib/definitions";
 
 interface Fields {
     name: string;
@@ -44,7 +46,16 @@ interface FieldsIncremented {
     password: boolean;
 }
 
-export function AuthForm() {
+interface FormProps {
+    fields: Fields;
+    handleProgress: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface RegisterFormProps extends FormProps {
+    progress: number;
+}
+
+export function AuthForm({ teams }: { teams: Team[] }) {
     const [progress, setProgress] = useState(0);
     const [fields, setFields] = useState<Fields>({
         name: '',
@@ -90,21 +101,13 @@ export function AuthForm() {
                 <TabsTrigger className="w-1/2" value="register">Registrarse</TabsTrigger>
             </TabsList>
             <LoginForm />
-            <RegisterForm fields={fields} handleProgress={handleProgress} progress={progress} />
+            <RegisterForm fields={fields} handleProgress={handleProgress} progress={progress} teams={teams} />
         </Tabs>
     );
 }
 
-interface FormProps {
-    fields: Fields;
-    handleProgress: (event: ChangeEvent<HTMLInputElement>) => void;
-}
+export function RegisterForm({ fields, handleProgress, progress, teams } : { fields: Fields, handleProgress: (event: ChangeEvent<HTMLInputElement>) => void, progress: number, teams: Team[] }) {
 
-interface RegisterFormProps extends FormProps {
-    progress: number;
-}
-
-export function RegisterForm({ fields, handleProgress, progress }: RegisterFormProps) {
     const [step, setStep] = useState(1);
 
     const handleNext = () => {
@@ -124,7 +127,6 @@ export function RegisterForm({ fields, handleProgress, progress }: RegisterFormP
             <Card>
                 <CardHeader className="pb-0">
                     <CardTitle>Registrarse</CardTitle>
-
                 </CardHeader>
                 <Progress className="w-[90%] mx-auto my-3" value={progress} />
 
@@ -157,16 +159,14 @@ export function RegisterForm({ fields, handleProgress, progress }: RegisterFormP
                                 <Label htmlFor="email">Carrera</Label>
                                 <Select>
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Seleccione una carrera" />
+                                        <SelectValue placeholder="Seleccione un equipo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
-                                            <SelectItem value="apple">Apple</SelectItem>
-                                            <SelectItem value="banana">Banana</SelectItem>
-                                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                                            <SelectItem value="grapes">Grapes</SelectItem>
-                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                            <SelectLabel>Equipos</SelectLabel>
+                                            {teams.map((team: Team) => (
+                                                <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>

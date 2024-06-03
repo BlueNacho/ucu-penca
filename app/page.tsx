@@ -35,7 +35,7 @@ export default async function Page() {
       </div>
 
       <div className="hidden lg:flex flex-col h-full max-w-full items-center justify-center">
-        <div className="flex flex-row border rounded-xl bg-background/40 w-[1024px] h-[512px]">
+        <div className="flex flex-row border rounded-xl bg-background/50 w-[1024px] h-[512px]">
           <div className="w-1/2 h-full rounded-l-xl relative overflow-hidden bg-cover bg-center flex flex-col items-center justify-center" style={{ backgroundImage: "url(/background-login.jpg)" }}>
             <div className="w-max flex flex-col items-center gap-5 max-w-lg bg-secondary/60 p-3 rounded-xl border backdrop-blur-[2px]">
               <div className="items-center flex flex-col w-max">

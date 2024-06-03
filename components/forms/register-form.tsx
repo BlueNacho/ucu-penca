@@ -26,6 +26,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TabsContent } from "@/components/ui/tabs";
 import { Career, Team } from "@/lib/definitions";
 import SelectCountry from "@/components/select-country";
+import clsx from "clsx";
 
 export default function RegisterForm({ careers, teams }: { careers: Career[], teams: Team[] }) {
 
@@ -54,10 +55,7 @@ export default function RegisterForm({ careers, teams }: { careers: Career[], te
 
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = event.target;
-        setFields((prevFields) => ({
-            ...prevFields,
-            [id]: value,
-        }));
+        setFields((prevFields) => ({ ...prevFields, [id]: value}));
     };
 
     const firstStepFieldsFilled = () => {
@@ -76,7 +74,10 @@ export default function RegisterForm({ careers, teams }: { careers: Career[], te
                 <CardHeader className="pb-0">
                     <CardTitle>Registrarse</CardTitle>
                 </CardHeader>
-                <Progress className="w-[90%] mx-auto my-3" value={progress} />
+
+                <Progress className={clsx("w-[90%] mx-auto my-3",
+                    progress === 100 && "",
+                )} value={progress} />
 
                 <CardContent className="space-y-2">
                     <form className="space-y-2">

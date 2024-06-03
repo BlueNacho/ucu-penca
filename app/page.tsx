@@ -11,7 +11,7 @@ export default async function Page() {
   const careers = await fetchCarreers();
 
   return (
-    <main className="min-h-[512px] h-screen w-full bg-gradient-to-tl from-background to-primary dark:from-background dark:to-primary/30 bg-no-repeat">
+    <main className="min-h-[532px] h-screen w-full bg-gradient-to-tl from-background to-primary dark:from-background dark:to-primary/30 bg-no-repeat">
       <div className="lg:hidden h-full max-w-full flex flex-col items-center justify-center">
         <div className="w-max flex flex-col items-center gap-5 max-w-lg md:border md:rounded-xl p-5 md:bg-background/40">
           <div className="items-center flex flex-col w-max">
@@ -52,8 +52,8 @@ export default async function Page() {
                 </div>
               </div>
             </div>
-
           </div>
+          
           <div className="w-1/2 h-full z-10 flex flex-col items-center justify-center py-10">
             <FormSelector>
               <RegisterForm careers={careers} teams={teams} />

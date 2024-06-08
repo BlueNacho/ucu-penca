@@ -1,14 +1,7 @@
 import Logo from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import FormSelector from "@/components/forms/form-selector";
-import RegisterForm from "@/components/forms/register-form";
-import { fetchCarreers, fetchTeams } from "@/lib/data";
-import LoginForm from "@/components/forms/login-form";
 
 export default async function Page() {
-
-  const teams = await fetchTeams();
-  const careers = await fetchCarreers();
 
   return (
     <main className="min-h-[532px] h-screen w-full bg-gradient-to-tl from-background to-primary dark:from-background dark:to-primary/30 bg-no-repeat">
@@ -55,10 +48,7 @@ export default async function Page() {
           </div>
           
           <div className="w-1/2 h-full z-10 flex flex-col items-center justify-center py-10">
-            <FormSelector>
-              <RegisterForm careers={careers} teams={teams} />
-              <LoginForm />
-            </FormSelector>
+            
           </div>
         </div>
       </div>

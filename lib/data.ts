@@ -31,7 +31,7 @@ export async function fetchTeams() {
     }
 }
 
-export async function fetchCarreers() {
+export async function fetchCareers() {
     try {
         const res = await client.query("SELECT * FROM career");
         return res.rows as Career[];

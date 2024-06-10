@@ -18,7 +18,7 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
             <div className="grid gap-4">
                 <div className="grid grid-cols-2 gap-2">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Nombre</Label>
+                        <Label htmlFor="name">Nombre*</Label>
                         <Input
                             id="name"
                             type="text"
@@ -27,7 +27,7 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="lastname">Apellido</Label>
+                        <Label htmlFor="lastname">Apellido*</Label>
                         <Input
                             id="lastname"
                             type="text"
@@ -38,13 +38,13 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                 </div>
                 <div className="grid gap-2">
                     <div className="flex items-center">
-                        <Label htmlFor="email">Correo</Label>
+                        <Label htmlFor="email">Correo*</Label>
                     </div>
                     <Input id="mail" type="email" placeholder="Correo" required />
                 </div>
                 <div className="grid gap-2">
                     <div className="flex items-center">
-                        <Label htmlFor="email">Carrera</Label>
+                        <Label htmlFor="email">Carrera*</Label>
                     </div>
                     <Select>
                         <SelectTrigger>
@@ -64,14 +64,18 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                 </div>
                 <div className="grid gap-2">
                     <div className="flex items-center">
-                        <Label htmlFor="password">Contraseña</Label>
+                        <Label htmlFor="password">Contraseña*</Label>
                     </div>
                     <Input id="password" type="password" placeholder="Contraseña" required />
                 </div>
-                <hr />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="relative flex items-center">
+                    <div className="flex-grow border-t border-gray-400"></div>
+                    <span className="flex-shrink mx-4 text-gray-400">Esta elección no se podrá cambiar</span>
+                    <div className="flex-grow border-t border-gray-400"></div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 border p-3 bg-gradient-to-r from-card to-primary/10 rounded-sm">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Campeón</Label>
+                        <Label htmlFor="name">&#x1f3c6; Campeón*</Label>
                         <Select>
                             <SelectTrigger>
                                 <SelectValue placeholder="Seleccione carrera" />
@@ -89,7 +93,7 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                         </Select>
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="lastname">Sub-campeón</Label>
+                        <Label htmlFor="lastname">&#x1f948; Sub-campeón*</Label>
                         <Select>
                             <SelectTrigger>
                                 <SelectValue placeholder="Seleccione carrera" />

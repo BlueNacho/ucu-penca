@@ -9,7 +9,7 @@ import {
     Career
  } from "./definitions";
 
-const { Client } = require("pg");
+import {Client} from "pg";
 import { unstable_noStore as noStore } from "next/cache";
 
 const client = new Client({
@@ -20,6 +20,17 @@ const client = new Client({
 });
 
 client.connect();
+
+export async function fetchMatches() {
+    try {
+        const res = await client.query("SELECT * FROM match");
+        console.log(res.rows);
+        return res.rows as Match[];
+    } catch (error) {
+        console.error("Error fetching matches:", error);
+        throw error;
+    }
+}
 
 export async function fetchTeams() {
     try {
@@ -37,6 +48,16 @@ export async function fetchCareers() {
         return res.rows as Career[];
     } catch (error) {
         console.error("Error fetching carreers:", error);
+        throw error;
+    }
+}
+
+export async function getUser(email: string){
+    try {
+        const user = await client.query("SELECT * FROM users WHERE email=$1", [email]);
+        return user.rows[0] as User;
+    } catch (error) {
+        console.error("Error fetching user:", error);
         throw error;
     }
 }

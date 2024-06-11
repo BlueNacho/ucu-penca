@@ -1,4 +1,4 @@
-import Footer from "@/components/footer";
+import BottomNav from "@/components/bottom-nav";
 import Navbar from "@/components/navbar";
 
 export default function Layout({
@@ -9,13 +9,13 @@ export default function Layout({
     return (
         <main className="flex h-screen flex-col lg:min-h-[400px] relative">
             <Navbar />
-            <div className="dark:bg-gradient-to-t dark:from-primary/10 h-full">
-                <div className="md:w-[65%] lg:w-[60%] xl:w-[50%] lg:max-w-6xl mx-auto h-full p-3">
+            <BottomNav />
+            <div className="bg-neutral-100 dark:bg-primary/5 h-full">
+                <div className="sm:w-[90%] md:w-[90%] lg:w-[60%] xl:w-[50%] lg:max-w-6xl mx-auto h-full p-3 lg:pt-8 md:pt-4">
                     {children}
                 </div>
             </div>
-            <Footer />
-
+            
         </main>
     )
 }

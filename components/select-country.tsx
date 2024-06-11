@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import Image from 'next/image';
-import { Team } from '@/lib/definitions';
+import { Team } from '@/lib/types/definitions';
 import { ChangeEvent } from 'react';
 
 interface SelectCountryProps {
@@ -22,7 +22,7 @@ interface SelectCountryProps {
 export default function SelectCountry({ id, teams, onSelectChange }: SelectCountryProps) {
     return (
         <div id={id}>
-            <Select  onValueChange={(value) => onSelectChange({ target: { id, value } } as ChangeEvent<HTMLSelectElement>)}>
+            <Select onValueChange={(value) => onSelectChange({ target: { id, value } } as ChangeEvent<HTMLSelectElement>)}>
                 <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar equipo" />
                 </SelectTrigger>

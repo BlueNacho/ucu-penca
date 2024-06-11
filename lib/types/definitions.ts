@@ -1,3 +1,17 @@
+//Matches
+export type MatchDisplayed = {
+    id: string;
+    home_team_name: string;
+    home_team_code: string;
+    away_team_name: string;
+    away_team_code: string;
+    home_team_goals: number;
+    away_team_goals: number;
+    start_time: string;
+    phase: string;
+    status: string;
+};
+
 export type User = {
     id: string;
     email: string;

@@ -7,33 +7,35 @@ const careers = [
 ];
 
 const phases = [
-  { name: "Fase de grupos" },
+  { name: "Fecha 1" },
+  { name: "Fecha 2" },
+  { name: "Fecha 3" },
   { name: "Cuartos de final" },
   { name: "Semifinales" },
   { name: "Final" },
-  { name: "Playoff tercer puesto" },
+  { name: "Partido por el tercer lugar" },
 ];
 
 const teams = [
-  { name: "Argentina", code: "ar", phase: "Fase de grupos", group_name: "A" },
-  { name: "Peru", code: "pe", phase: "Fase de grupos", group_name: "A" },
-  { name: "Chile", code: "cl", phase: "Fase de grupos", group_name: "A" },
-  { name: "Canada", code: "ca", phase: "Fase de grupos", group_name: "A" },
+  { name: "Argentina", code: "ar", group_name: "A" },
+  { name: "Peru", code: "pe", group_name: "A" },
+  { name: "Chile", code: "cl", group_name: "A" },
+  { name: "Canada", code: "ca", group_name: "A" },
 
-  { name: "Mexico", code: "mx", phase: "Fase de grupos", group_name: "B" },
-  { name: "Ecuador", code: "ec", phase: "Fase de grupos", group_name: "B" },
-  { name: "Venezuela", code: "ve", phase: "Fase de grupos", group_name: "B" },
-  { name: "Jamaica", code: 'jm', phase: "Fase de grupos", group_name: "B" },
+  { name: "Mexico", code: "mx", group_name: "B" },
+  { name: "Ecuador", code: "ec", group_name: "B" },
+  { name: "Venezuela", code: "ve", group_name: "B" },
+  { name: "Jamaica", code: "jm", group_name: "B" },
 
-  { name: "Estados Unidos", code: 'us', phase: "Fase de grupos", group_name: "C" },
-  { name: "Uruguay", code: 'uy', phase: "Fase de grupos", group_name: "C" },
-  { name: "Panama", code: 'pa', phase: "Fase de grupos", group_name: "C" },
-  { name: "Bolivia", code: 'bo', phase: "Fase de grupos", group_name: "C" },
+  { name: "Estados Unidos", code: "us", group_name: "C" },
+  { name: "Uruguay", code: "uy", group_name: "C" },
+  { name: "Panama", code: "pa", group_name: "C" },
+  { name: "Bolivia", code: "bo", group_name: "C" },
 
-  { name: "Brasil", code: 'br', phase: "Fase de grupos", group_name: "D" },
-  { name: "Colombia", code: 'co', phase: "Fase de grupos", group_name: "D" },
-  { name: "Paraguay", code: 'py', phase: "Fase de grupos", group_name: "D" },
-  { name: "Costa Rica", code: 'cr', phase: "Fase de grupos", group_name: "D" },
+  { name: "Brasil", code: "br", group_name: "D" },
+  { name: "Colombia", code: "co", group_name: "D" },
+  { name: "Paraguay", code: "py", group_name: "D" },
+  { name: "Costa Rica", code: "cr", group_name: "D" },
 ];
 
 const users = [
@@ -55,8 +57,8 @@ const users = [
     password: "password123",
     career: "Ing. Informatica",
     score: 100,
-    champion_team_id: 1, 
-    runner_up_team_id: 2, 
+    champion_team_id: 1,
+    runner_up_team_id: 2,
     is_admin: false,
   },
   {
@@ -66,7 +68,7 @@ const users = [
     password: "mypassword",
     career: "Medicina",
     score: 200,
-    champion_team_id: 2, 
+    champion_team_id: 2,
     runner_up_team_id: 3,
     is_admin: false,
   },
@@ -77,48 +79,48 @@ const users = [
     password: "alicepassword",
     career: "Economia",
     score: 150,
-    champion_team_id: 3, 
-    runner_up_team_id: 4, 
+    champion_team_id: 3,
+    runner_up_team_id: 4,
     is_admin: false,
   },
 ];
 
 const matches = [
   {
-    home_team_id: 1, // Argentina
-    away_team_id: 2, // Brasil
+    home_team_id: 1,
+    away_team_id: 2,
     home_team_goals: 0,
     away_team_goals: 0,
-    start_time: "2024-06-14T18:00:00Z",
-    phase: "Fase de grupos",
-    status: "pending",
+    start_time: "2024-06-14T18:00:00",
+    phase: "Fecha 1",
+    status: "pendiente",
   },
   {
-    home_team_id: 3, // Chile
-    away_team_id: 4, // Uruguay
+    home_team_id: 3,
+    away_team_id: 4,
     home_team_goals: 0,
     away_team_goals: 0,
-    start_time: "2024-06-15T18:00:00Z",
-    phase: "Fase de grupos",
-    status: "pending",
+    start_time: "2024-06-15T18:00:00",
+    phase: "Fecha 1",
+    status: "pendiente",
   },
   {
-    home_team_id: 1, // Argentina
-    away_team_id: 3, // Chile
+    home_team_id: 1,
+    away_team_id: 3,
     home_team_goals: 0,
     away_team_goals: 0,
-    start_time: "2024-06-16T18:00:00Z",
-    phase: "Fase de grupos",
-    status: "pending",
+    start_time: "2024-01-16T18:00:00",
+    phase: "Fecha 1",
+    status: "pendiente",
   },
   {
-    home_team_id: 2, // Brasil
-    away_team_id: 4, // Uruguay
+    home_team_id: 2,
+    away_team_id: 4,
     home_team_goals: 0,
     away_team_goals: 0,
-    start_time: "2024-06-17T18:00:00Z",
-    phase: "Fase de grupos",
-    status: "pending",
+    start_time: "2024-06-17T18:00:00",
+    phase: "Fecha 1",
+    status: "pendiente",
   },
 ];
 

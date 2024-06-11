@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Team, Career } from "@/lib/definitions";
+import { Team, Career } from "@/lib/types/definitions";
 
 export default function RegisterForm({ teams, careers }: { teams: Team[], careers: Career[] }) {
     return (

@@ -3,11 +3,8 @@
 import { 
     User,
     Team,
-    Match,
-    Prediction,
-    Phase,
     Career
- } from "./definitions";
+ } from "../types/definitions";
 
 import {Client} from "pg";
 import { unstable_noStore as noStore } from "next/cache";
@@ -20,17 +17,6 @@ const client = new Client({
 });
 
 client.connect();
-
-export async function fetchMatches() {
-    try {
-        const res = await client.query("SELECT * FROM match");
-        console.log(res.rows);
-        return res.rows as Match[];
-    } catch (error) {
-        console.error("Error fetching matches:", error);
-        throw error;
-    }
-}
 
 export async function fetchTeams() {
     try {

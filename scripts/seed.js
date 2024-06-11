@@ -45,10 +45,8 @@ const seedDatabase = async () => {
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         code VARCHAR(4) NOT NULL,
-        phase VARCHAR(255) NOT NULL,
         group_name group_name NOT NULL,
-        group_score INT DEFAULT 0,
-        FOREIGN KEY (phase) REFERENCES Phase(name)
+        group_score INT DEFAULT 0
       );
     `);
 
@@ -75,7 +73,7 @@ const seedDatabase = async () => {
       DO $$
       BEGIN
           IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'match_status') THEN
-              CREATE TYPE match_status AS ENUM ('pending', 'finished');
+              CREATE TYPE match_status AS ENUM ('pendiente', 'jugándose', 'finalizado');
           END IF;
       END$$;
     `);
@@ -90,6 +88,7 @@ const seedDatabase = async () => {
         start_time TIMESTAMP NOT NULL,
         phase VARCHAR(255) NOT NULL,
         status match_status NOT NULL,
+        group_name group_name,
         FOREIGN KEY (home_team_id) REFERENCES Team(id),
         FOREIGN KEY (away_team_id) REFERENCES Team(id),
         FOREIGN KEY (phase) REFERENCES Phase(name)
@@ -127,8 +126,8 @@ const seedDatabase = async () => {
     // Insertar teams
     for (const team of data.teams) {
       await client.query(
-        "INSERT INTO Team (name, code, phase, group_name) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
-        [team.name, team.code, team.phase, team.group_name]
+        "INSERT INTO Team (name, code, group_name) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
+        [team.name, team.code, team.group_name]
       );
     }
 

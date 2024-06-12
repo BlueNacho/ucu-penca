@@ -38,7 +38,7 @@ export async function fetchCareers() {
     }
 }
 
-export async function getUser(email: string){
+export async function getUser(email: string): Promise<User | undefined>{
     try {
         const user = await client.query("SELECT * FROM users WHERE email=$1", [email]);
         return user.rows[0] as User;

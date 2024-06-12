@@ -1,10 +1,7 @@
 import { Pool } from "pg";
 
 export const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
-    user: process.env.POSTGRES_USER,
+    connectionString: process.env.POSTGRES_URL
 });
 
 // Puedes agregar un listener para manejar errores de conexión del pool

@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import RegisterForm from "@/components/forms/register-form"
-import { fetchCareers, fetchTeams } from "@/lib/data";
+import { fetchCareers, fetchTeams } from "@/lib/data/data";
 
 export default async function Page() {
     const teams = await fetchTeams();

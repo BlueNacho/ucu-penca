@@ -3,10 +3,7 @@ const bcrypt = require("bcrypt");
 const data = require("./population-data");
 
 const client = new Client({
-  connectionString: process.env.SEED_POSTGRES_URL,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DATABASE,
-  user: process.env.POSTGRES_USER,
+  connectionString: process.env.DATABASE_URL
 });
 
 const seedDatabase = async () => {
@@ -16,16 +13,16 @@ const seedDatabase = async () => {
     // Habilitar la extensión uuid-ossp
     await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
 
-    // Crear las tablas si no existen
+    //Tablas del sistema
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Career (
+      CREATE TABLE IF NOT EXISTS careers (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE
       );
     `);
 
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Phase (
+      CREATE TABLE IF NOT EXISTS phases (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE
       );
@@ -41,30 +38,12 @@ const seedDatabase = async () => {
     `);
 
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Team (
+      CREATE TABLE IF NOT EXISTS teams (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         code VARCHAR(4) NOT NULL,
         group_name group_name NOT NULL,
         group_score INT DEFAULT 0
-      );
-    `);
-
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS Users (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        first_name VARCHAR(255) NOT NULL,
-        last_name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        career VARCHAR(255),
-        score INT,
-        champion_team_id INT,
-        runner_up_team_id INT,
-        is_admin BOOLEAN DEFAULT FALSE,
-        FOREIGN KEY (career) REFERENCES Career(name),
-        FOREIGN KEY (champion_team_id) REFERENCES Team(id),
-        FOREIGN KEY (runner_up_team_id) REFERENCES Team(id)
       );
     `);
 
@@ -79,7 +58,7 @@ const seedDatabase = async () => {
     `);
 
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Match (
+      CREATE TABLE IF NOT EXISTS matches (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         home_team_id INT NOT NULL,
         away_team_id INT NOT NULL,
@@ -89,28 +68,74 @@ const seedDatabase = async () => {
         phase VARCHAR(255) NOT NULL,
         status match_status NOT NULL,
         group_name group_name,
-        FOREIGN KEY (home_team_id) REFERENCES Team(id),
-        FOREIGN KEY (away_team_id) REFERENCES Team(id),
-        FOREIGN KEY (phase) REFERENCES Phase(name)
+        FOREIGN KEY (home_team_id) REFERENCES teams(id),
+        FOREIGN KEY (away_team_id) REFERENCES teams(id),
+        FOREIGN KEY (phase) REFERENCES phases(name)
       );
     `);
 
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Prediction (
+      CREATE TABLE IF NOT EXISTS users
+        (
+          id SERIAL,
+          name TEXT NOT NULL,
+          lastname TEXT NOT NULL,
+          email VARCHAR(255),
+          password TEXT,
+          score INT DEFAULT 0,
+          career_id INT,
+          champion_team_id INT,
+          runner_up_team_id INT,
+          is_admin BOOLEAN DEFAULT FALSE,
+          "emailVerified" TIMESTAMPTZ,
+          
+          FOREIGN KEY (career_id) REFERENCES careers(id),
+          FOREIGN KEY (champion_team_id) REFERENCES teams(id),
+          FOREIGN KEY (runner_up_team_id) REFERENCES teams(id),
+        
+          PRIMARY KEY (id)
+        );
+    `);
+
+    // Cambiar el tipo de dato de user_id en la tabla predictions a UUID si se puede
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS predictions (
         match_id UUID NOT NULL,
-        user_id UUID NOT NULL,
+        user_id SERIAL NOT NULL, 
         home_team_goals INT DEFAULT 0,
         away_team_goals INT DEFAULT 0,
         PRIMARY KEY (match_id, user_id),
-        FOREIGN KEY (match_id) REFERENCES Match(id),
-        FOREIGN KEY (user_id) REFERENCES Users(id)
+        FOREIGN KEY (match_id) REFERENCES matches(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+    `);
+
+    //Tabla necesaria para NextAuth V5
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS accounts
+      (
+        id SERIAL,
+        "userId" INTEGER NOT NULL,
+        type VARCHAR(255) NOT NULL,
+        provider VARCHAR(255) NOT NULL,
+        "providerAccountId" VARCHAR(255) NOT NULL,
+        refresh_token TEXT,
+        access_token TEXT,
+        expires_at BIGINT,
+        id_token TEXT,
+        scope TEXT,
+        session_state TEXT,
+        token_type TEXT,
+      
+        PRIMARY KEY (id)
       );
     `);
 
     // Insertar careers
     for (const career of data.careers) {
       await client.query(
-        "INSERT INTO Career (name) VALUES ($1) ON CONFLICT DO NOTHING",
+        "INSERT INTO careers (name) VALUES ($1) ON CONFLICT DO NOTHING",
         [career.name]
       );
     }
@@ -118,7 +143,7 @@ const seedDatabase = async () => {
     // Insertar phases
     for (const phase of data.phases) {
       await client.query(
-        "INSERT INTO Phase (name) VALUES ($1) ON CONFLICT DO NOTHING",
+        "INSERT INTO phases (name) VALUES ($1) ON CONFLICT DO NOTHING",
         [phase.name]
       );
     }
@@ -126,34 +151,35 @@ const seedDatabase = async () => {
     // Insertar teams
     for (const team of data.teams) {
       await client.query(
-        "INSERT INTO Team (name, code, group_name) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
+        "INSERT INTO teams (name, code, group_name) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
         [team.name, team.code, team.group_name]
       );
     }
 
     // Encriptar passwords e insertar users
-    for (const user of data.users) {
-      const hashedPassword = await bcrypt.hash(user.password, 10); // 10 salt rounds
-      await client.query(
-        "INSERT INTO Users (first_name, last_name, email, password, career, score, champion_team_id, runner_up_team_id, is_admin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-        [
-          user.first_name,
-          user.last_name,
-          user.email,
-          hashedPassword,
-          user.career,
-          user.score,
-          user.champion_team_id,
-          user.runner_up_team_id,
-          user.is_admin,
-        ]
-      );
-    }
+
+    // for (const user of data.users) {
+    //   const hashedPassword = await bcrypt.hash(user.password, 10); // 10 salt rounds
+    //   await client.query(
+    //     "INSERT INTO users (first_name, last_name, email, password, career, score, champion_team_id, runner_up_team_id, is_admin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+    //     [
+    //       user.first_name,
+    //       user.last_name,
+    //       user.email,
+    //       hashedPassword,
+    //       user.career,
+    //       user.score,
+    //       user.champion_team_id,
+    //       user.runner_up_team_id,
+    //       user.is_admin,
+    //     ]
+    //   );
+    // }
 
     // Insertar matches
     for (const match of data.matches) {
       await client.query(
-        "INSERT INTO Match (home_team_id, away_team_id, home_team_goals, away_team_goals, start_time, phase, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO matches (home_team_id, away_team_id, home_team_goals, away_team_goals, start_time, phase, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
         [
           match.home_team_id,
           match.away_team_id,
@@ -166,7 +192,7 @@ const seedDatabase = async () => {
       );
     }
 
-    console.log("Database seeded successfully");
+    console.log("Database seeded successfully!");
   } catch (err) {
     console.error("Error seeding database", err);
   } finally {

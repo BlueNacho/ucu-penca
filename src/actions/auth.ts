@@ -5,22 +5,38 @@ import { LoginSchema, RegisterSchema } from "@/schemas";
 import bcrypt from "bcrypt";
 import { getUserByEmail } from "@/data/users";
 import { pool } from "@/data/postgrePool";
+import { signIn } from "@/auth";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { AuthError } from "next-auth";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
 
     if (!validatedFields.success) {
-        return { error: "Campos invalidos"};
+        return { error: "Campos invalidos" };
     }
 
-    return { success: "Autenticado con éxito" };
+    const { email, password } = validatedFields.data;
+
+    try {
+        await signIn("credentials", { email, password, redirectTo: DEFAULT_LOGIN_REDIRECT });
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case "CredentialsSignin":
+                    return { error: "Credenciales invalidas" };
+                default:
+                    return { error: "Error desconocido" };
+            }
+        }
+    }
 }
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const validatedFields = RegisterSchema.safeParse(values);
 
     if (!validatedFields.success) {
-        return { error: "Campos invalidos"};
+        return { error: "Campos invalidos" };
     }
 
     const { name, lastname, email, password, career, champion, runnerUp } = validatedFields.data;

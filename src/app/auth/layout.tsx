@@ -1,6 +1,6 @@
 import Image from "next/image"
 import BackgroundImage from "../../../public/auth-background.jpg"
-import Logo from "@/components/logo";
+import Logo from "@/components/Logo";
 
 export default function Layout({
     children,
@@ -13,8 +13,6 @@ export default function Layout({
                 {children}
             </div>
             <div className="hidden lg:flex relative overflow-hidden items-center justify-center">
-
-
                 <Image
                     src={BackgroundImage}
                     alt="Image"
@@ -23,7 +21,6 @@ export default function Layout({
                     placeholder="blur"
                     priority
                 />
-
                 <div className="w-max flex flex-col items-center gap-5 max-w-lg bg-primary/20 p-3 rounded-xl backdrop-blur-xl">
                     <div className="items-center flex flex-col w-max">
                         <h1 className="text-[3rem] -mb-2 font-bold tracking-wider uppercase text-white">Bienvenido a la</h1>

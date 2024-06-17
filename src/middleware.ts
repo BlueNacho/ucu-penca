@@ -5,12 +5,11 @@ import {
     authRoutes,
     publicRoutes,
     privateRoutes,
-    adminRoutes,
+    ADMIN_PREFIX,
 
 } from '@/routes'
 
 export async function middleware(request: NextRequest) {
-    console.log("hola")
     const { nextUrl } = request;
     const session = await getSession();
 
@@ -20,7 +19,7 @@ export async function middleware(request: NextRequest) {
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
     const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
-    const isAdminRoute = adminRoutes.includes(nextUrl.pathname);
+    const isAdminRoute = nextUrl.pathname.startsWith(ADMIN_PREFIX);
 
     if (isPublicRoute) {
         return;
@@ -41,6 +40,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isAdminRoute) {
+        console.log(isAdmin)
         if (!isAdmin) {
             return Response.redirect(new URL('/auth/login', nextUrl));
         }

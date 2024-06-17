@@ -15,8 +15,7 @@ export const privateRoutes = [
     '/ranking',
 ]
 
-export const adminRoutes = [
-    '/admin',
-]
+export const ADMIN_PREFIX = '/admin';
+
 
 export const DEFAULT_LOGIN_REDIRECT = '/partidos';

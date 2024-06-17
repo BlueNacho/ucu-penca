@@ -14,9 +14,11 @@ export default async function Navbar() {
 
     return (
         <>
-            <header className="flex flex-col lg:flex-row w-full border-b bg-background">
+            <nav className="flex flex-col lg:flex-row w-full border-b bg-background">
                 <div className="flex justify-center items-center lg:justify-start w-full lg:w-[60%] xl:w-[50%] lg:max-w-6xl lg:mx-auto py-2">
-                    <Logo />
+                    <Link href="/partidos">
+                        <Logo />
+                    </Link>
                     <div className="pl-8 flex-row gap-5 flex-grow h-full items-center hidden lg:flex font-medium text-lg">
                         <Link href="/partidos" className="group hover:text-primary transition-all flex flex-row gap-2 items-center">
                             <ShieldHalf size={20} />
@@ -29,9 +31,9 @@ export default async function Navbar() {
                             Ranking</Link>
 
 
-                        <Link href="/perfil" className="ml-auto flex items-center group bg-primary/30 hover:bg-primary transition-all rounded-full">
-                            <span className="hidden transition-all xl:block pl-3 pr-2">{session.user?.name}</span>
-                            <span className="ml-auto border dark:border-foreground/30 bg-muted/80 dark:bg-muted/50 p-2 rounded-full hover:bg-muted transition-all cursor-pointer">
+                        <Link href="/perfil" className="ml-auto flex items-center group bg-primary/10 hover:bg-primary transition-all rounded-lg border">
+                            <span className="hidden transition-all xl:block px-3 text-sm">{session.user?.name}</span>
+                            <span className="ml-auto border dark:border-foreground/30 bg-muted/80 dark:bg-muted/50 p-2 rounded-r-lg hover:bg-muted transition-all cursor-pointer">
                                 <User className="text-foreground/30 dark:text-foreground" />
                             </span>
                         </Link>
@@ -39,9 +41,7 @@ export default async function Navbar() {
 
                     </div>
                 </div>
-            </header>
-
-
+            </nav >
         </>
     );
 }

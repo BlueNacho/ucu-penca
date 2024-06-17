@@ -17,3 +17,17 @@ export const RegisterSchema = z.object({
     message: "Campeón y Sub-campeón no pueden ser iguales",
     path: ["runnerUp"],
 });
+
+export const MatchEditSchema = z.object({
+    home_team_id: z.string(),
+    away_team_id: z.string(),
+    home_team_goals: z.number().min(0, "Goles del equipo local inválidos"),
+    away_team_goals: z.number().min(0, "Goles del equipo visitante inválidos"),
+    start_time: z.date(),
+    phase: z.string().min(1, "Fase inválida"),
+    group_name: z.string().min(1, "Nombre de grupo inválido"),
+    status: z.enum(["Scheduled", "In Progress", "Completed"]),
+}).refine((data) => data.home_team_id !== data.away_team_id, {
+    message: "El equipo local y el visitante no pueden ser iguales",
+    path: ["away_team_id"],
+});

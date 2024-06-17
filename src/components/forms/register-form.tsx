@@ -1,6 +1,5 @@
 'use client'
 
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,12 +31,13 @@ import { LogIn } from "lucide-react";
 import { register } from "@/actions/auth";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterForm({ teams, careers }: { teams: Team[], careers: Career[] }) {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
+    const router = useRouter()
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -53,7 +53,6 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
     });
 
     const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-        console.log(values);
         setError("");
         setSuccess("");
 
@@ -65,9 +64,9 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
 
                     if (data.success) {
                         form.reset();
-                        // setTimeout(() => {
-                        //     redirect('/auth/login')
-                        // }, 2000)
+                        setTimeout(() => {
+                            router.push('/auth/login')
+                        }, 1500)
                     }
                 });
         });

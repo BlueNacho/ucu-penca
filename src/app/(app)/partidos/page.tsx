@@ -23,9 +23,11 @@ export default async function Page() {
         <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
             {matches.map((match, index) => (
                 <Link href={`/partidos/${match.id}`} key={index}>
-                    <Card key={index} className="h-max transition-all xl:hover:scale-[101%] xl:hover:border-primary focus:scale-[100%] focus:border group relative">
+                    <Card key={index} className={clsx("h-max transition-all xl:hover:scale-[101%] focus:scale-[100%] group relative",
+                        match.status === "finalizado" ? "border-orange-600" : match.status === "jugándose" ? "border-emerald-600" : "active:border-primary xl:hover:border-primary"
+                    )}>
                         <span className={clsx("absolute right-0",
-                            match.status === "finalizado" ? "bg-emerald-600" : match.status === "jugándose" ? "bg-amber-600" : "bg-gray-500",
+                            match.status === "finalizado" ? "bg-orange-600" : match.status === "jugándose" ? "bg-emerald-600" : "bg-gray-500",
                             "text-white text-xs font-semibold px-2 rounded-bl-md rounded-tr-md"
                         )}>{match.status}</span>
                         <CardContent className="py-3 px-8 flex flex-row justify-between items-center">

@@ -66,8 +66,8 @@ const seedDatabase = async () => {
         away_team_goals INT DEFAULT 0,
         start_time TIMESTAMP NOT NULL,
         phase VARCHAR(255) NOT NULL,
-        status match_status NOT NULL,
         group_name group_name,
+        status match_status NOT NULL,
         FOREIGN KEY (home_team_id) REFERENCES teams(id),
         FOREIGN KEY (away_team_id) REFERENCES teams(id),
         FOREIGN KEY (phase) REFERENCES phases(name)
@@ -77,7 +77,7 @@ const seedDatabase = async () => {
     await client.query(`
       CREATE TABLE IF NOT EXISTS users
         (
-          id SERIAL,
+          id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
           name TEXT NOT NULL,
           lastname TEXT NOT NULL,
           email VARCHAR(255),
@@ -87,48 +87,22 @@ const seedDatabase = async () => {
           champion_team_id INT,
           runner_up_team_id INT,
           is_admin BOOLEAN DEFAULT FALSE,
-          "emailVerified" TIMESTAMPTZ,
           
           FOREIGN KEY (career_id) REFERENCES careers(id),
           FOREIGN KEY (champion_team_id) REFERENCES teams(id),
-          FOREIGN KEY (runner_up_team_id) REFERENCES teams(id),
-        
-          PRIMARY KEY (id)
+          FOREIGN KEY (runner_up_team_id) REFERENCES teams(id)
         );
     `);
 
-    // Cambiar el tipo de dato de user_id en la tabla predictions a UUID si se puede
     await client.query(`
       CREATE TABLE IF NOT EXISTS predictions (
         match_id UUID NOT NULL,
-        user_id SERIAL NOT NULL, 
+        user_id UUID NOT NULL, 
         home_team_goals INT DEFAULT 0,
         away_team_goals INT DEFAULT 0,
         PRIMARY KEY (match_id, user_id),
         FOREIGN KEY (match_id) REFERENCES matches(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
-      );
-    `);
-
-    //Tabla necesaria para NextAuth V5
-
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS accounts
-      (
-        id SERIAL,
-        "userId" INTEGER NOT NULL,
-        type VARCHAR(255) NOT NULL,
-        provider VARCHAR(255) NOT NULL,
-        "providerAccountId" VARCHAR(255) NOT NULL,
-        refresh_token TEXT,
-        access_token TEXT,
-        expires_at BIGINT,
-        id_token TEXT,
-        scope TEXT,
-        session_state TEXT,
-        token_type TEXT,
-      
-        PRIMARY KEY (id)
       );
     `);
 
@@ -158,28 +132,27 @@ const seedDatabase = async () => {
 
     // Encriptar passwords e insertar users
 
-    // for (const user of data.users) {
-    //   const hashedPassword = await bcrypt.hash(user.password, 10); // 10 salt rounds
-    //   await client.query(
-    //     "INSERT INTO users (first_name, last_name, email, password, career, score, champion_team_id, runner_up_team_id, is_admin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-    //     [
-    //       user.first_name,
-    //       user.last_name,
-    //       user.email,
-    //       hashedPassword,
-    //       user.career,
-    //       user.score,
-    //       user.champion_team_id,
-    //       user.runner_up_team_id,
-    //       user.is_admin,
-    //     ]
-    //   );
-    // }
+    for (const user of data.users) {
+      const hashedPassword = await bcrypt.hash(user.password, 10); // 10 salt rounds
+      await client.query(
+        "INSERT INTO users (name, lastname, email, password, career_id, champion_team_id, runner_up_team_id, is_admin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+        [
+          user.first_name,
+          user.last_name,
+          user.email,
+          hashedPassword,
+          user.career,
+          user.champion_team_id,
+          user.runner_up_team_id,
+          user.is_admin,
+        ]
+      );
+    }
 
     // Insertar matches
     for (const match of data.matches) {
       await client.query(
-        "INSERT INTO matches (home_team_id, away_team_id, home_team_goals, away_team_goals, start_time, phase, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO matches (home_team_id, away_team_id, home_team_goals, away_team_goals, start_time, phase, group_name, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
         [
           match.home_team_id,
           match.away_team_id,
@@ -187,6 +160,7 @@ const seedDatabase = async () => {
           match.away_team_goals,
           match.start_time,
           match.phase,
+          match.group_name,
           match.status,
         ]
       );

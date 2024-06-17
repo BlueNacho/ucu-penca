@@ -1,9 +1,10 @@
+// fetchMatchesWithPredictions.ts
 'use server';
 
 import { MatchDisplayed } from "../types/types";
 import { pool } from "./postgrePool";
 
-export async function fetchMatchesDisplayed(): Promise<MatchDisplayed[]> {
+export async function fetchMatchesDisplayed(userId: string): Promise<MatchDisplayed[]> {
     const client = await pool.connect();
 
     try {
@@ -20,15 +21,19 @@ export async function fetchMatchesDisplayed(): Promise<MatchDisplayed[]> {
                 m.away_team_goals,
                 m.start_time,
                 m.phase,
-                m.status
+                m.group_name,
+                m.status,
+                p.home_team_goals AS prediction_home_team_goals,
+                p.away_team_goals AS prediction_away_team_goals
             FROM matches m
             JOIN teams ht ON m.home_team_id = ht.id
             JOIN teams at ON m.away_team_id = at.id
+            LEFT JOIN predictions p ON m.id = p.match_id AND p.user_id = $1
         `;
-        const res = await client.query(query);
+        const res = await client.query(query, [userId]);
         return res.rows as MatchDisplayed[];
     } catch (error) {
-        console.error("Error fetching matches:", error);
+        console.error("Error fetching matches with predictions:", error);
         throw error;
     } finally {
         client.release();

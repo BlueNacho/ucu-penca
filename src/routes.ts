@@ -8,6 +8,15 @@ export const authRoutes = [
     '/auth/register',
 ]
 
-export const apiAuthPrefix = '/api/auth';
+export const privateRoutes = [
+    '/partidos',
+    '/fixture',
+    '/perfil',
+    '/ranking',
+]
+
+export const adminRoutes = [
+    '/admin',
+]
 
 export const DEFAULT_LOGIN_REDIRECT = '/partidos';

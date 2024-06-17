@@ -19,8 +19,12 @@ import { z } from "zod";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { login } from "@/actions/auth";
+import { redirect } from "next/navigation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
+    const router = useRouter()
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
@@ -36,15 +40,16 @@ export default function LoginForm() {
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
         setError("");
         setSuccess("");
-        
+
         startTransition(() => {
             login(values)
                 .then((data) => {
                     setError(data.error);
-                    setSuccess(data.success);
+                    setSuccess(data.success || "");
 
                     if (data.success) {
                         form.reset();
+                        router.push(DEFAULT_LOGIN_REDIRECT)
                     }
                 });
         });
@@ -93,7 +98,7 @@ export default function LoginForm() {
                         )}
                     />
                 </div>
-                
+
                 <Button type="submit" className="w-full text-white" disabled={isPending}>
                     Ingresar&nbsp;<LogIn size={20} />
                 </Button>

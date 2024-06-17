@@ -20,8 +20,8 @@ export default function Logo({ size = 'nav' }: { size?: 'nav' | 'sm' }) {
             {size === 'sm' && (
                 <div className="w-max flex flex-col items-start">
                     <div className="inline-flex">
-                        <p className="italic font-black tracking-wider flex flex-row text-5xl text-[#153161] dark:text-white">
-                            <span className="flex flex-row bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+                        <p className="italic font-black tracking-wider flex flex-row text-7xl text-white">
+                            <span className="flex not-italic flex-row bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
                                 UCU&nbsp;
                             </span>
                             PENCA

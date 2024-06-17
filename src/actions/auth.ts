@@ -5,11 +5,14 @@ import { LoginSchema, RegisterSchema } from "@/schemas";
 import bcrypt from "bcrypt";
 import { getUserByEmail } from "@/data/users";
 import { pool } from "@/data/postgrePool";
-import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { AuthError } from "next-auth";
+import { cookies } from "next/headers";
+import { encrypt } from "@/lib/auth-utils";
+import { error } from "console";
+import { set } from "date-fns";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export async function login(values: z.infer<typeof LoginSchema>) {
+    // Verify credentials && get the user
     const validatedFields = LoginSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -18,18 +21,26 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
     const { email, password } = validatedFields.data;
 
-    try {
-        await signIn("credentials", { email, password, redirectTo: DEFAULT_LOGIN_REDIRECT });
-    } catch (error) {
-        if (error instanceof AuthError) {
-            switch (error.type) {
-                case "CredentialsSignin":
-                    return { error: "Credenciales invalidas" };
-                default:
-                    return { error: "Error desconocido" };
-            }
-        }
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+        return { error: "Usuario no encontrado" };
     }
+
+    const passwordsMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordsMatch) {
+        return { error: "Contraseña incorrecta" };
+    }
+
+    // Create the session
+    const session = await encrypt({ user });
+
+    // Save the session in a cookie
+    cookies().set("session", session, { httpOnly: true });
+    
+    return { success: "Autenticado con exito" };
+    
 }
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {

@@ -5,8 +5,6 @@ export const pool = new Pool({
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
 })
 
 // Puedes agregar un listener para manejar errores de conexión del pool

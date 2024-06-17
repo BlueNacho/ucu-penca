@@ -191,7 +191,7 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                         <div className="flex-grow border-t border-gray-400"></div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 border p-3 bg-gradient-to-r from-card to-primary/10 rounded-sm">
+                    <div className="grid grid-cols-2 gap-2 border p-3 bg-gradient-to-r from-primary/30 to-primary/50 dark:from-card dark:to-primary/10 rounded-lg">
                         <FormField
                             control={form.control}
                             name="champion"

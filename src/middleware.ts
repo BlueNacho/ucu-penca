@@ -1,25 +1,29 @@
-import NextAuth from "next-auth"
-import authConfig from "./auth.config"
-
+import { NextRequest } from "next/server";
+import { decrypt, getSession, updateSession } from "./lib/auth-utils";
 import {
     DEFAULT_LOGIN_REDIRECT,
-    apiAuthPrefix,
     authRoutes,
     publicRoutes,
+    privateRoutes,
+    adminRoutes,
+
 } from '@/routes'
 
-const { auth } = NextAuth(authConfig)
+export async function middleware(request: NextRequest) {
+    console.log("hola")
+    const { nextUrl } = request;
+    const session = await getSession();
 
-export default auth((req) => {
-    const { nextUrl } = req;
-    const isLoggedIn = !!req.auth;
+    const isLoggedIn = !!session;
+    const isAdmin = session?.user?.is_admin;
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+    const isPrivateRoute = privateRoutes.includes(nextUrl.pathname);
+    const isAdminRoute = adminRoutes.includes(nextUrl.pathname);
 
-    if (isApiAuthRoute) {
-        return null;
+    if (isPublicRoute) {
+        return;
     }
 
     if (isAuthRoute) {
@@ -29,12 +33,26 @@ export default auth((req) => {
         return null;
     }
 
+    if (isPrivateRoute) {
+        if (!isLoggedIn) {
+            return Response.redirect(new URL('/auth/login', nextUrl));
+        }
+        return;
+    }
+
+    if (isAdminRoute) {
+        if (!isAdmin) {
+            return Response.redirect(new URL('/auth/login', nextUrl));
+        }
+        return;
+    }
+
     if (!isLoggedIn && !isPublicRoute) {
         return Response.redirect(new URL('/auth/login', nextUrl));
     }
 
     return null;
-})
+}
 
 export const config = {
     matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],

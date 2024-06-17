@@ -1,21 +1,8 @@
+# ejecutar "docker compose up -d db" para levantar el contenedor
+
 version: '3.8'
 
 services:
-  web:
-    build: .
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/app
-      - /app/node_modules
-    networks:
-        - obligatorio-network
-    environment:
-      - DATABASE_URL=${POSTGRES_URL}
-    depends_on:
-      - db
-    command: sh -c "while ! nc -z db 5432; do sleep 1; done; npm run dev"
-  
   db:
     image: postgres:14-alpine
     restart: always
@@ -27,12 +14,3 @@ services:
       POSTGRES_DB: ${POSTGRES_DATABASE}
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
-    networks:
-      - obligatorio-network
-
-volumes:
-  pgdata:
-
-networks:
-  obligatorio-network:
-    driver: bridge  

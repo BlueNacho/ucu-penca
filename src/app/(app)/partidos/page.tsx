@@ -10,6 +10,12 @@ import { formatDateToLocal } from "@/lib/utils";
 import { getSession } from "@/lib/auth-utils";
 import Link from "next/link";
 import clsx from "clsx";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default async function Page() {
 
@@ -39,14 +45,46 @@ export default async function Page() {
                                             priority
                                             className="object-cover object-center rounded-lg w-16 h-12 shadow-md"
                                         />
-                                        <span className="font-medium text-sm lg:text-lg text-nowrap">{match.home_team_name}</span>
+                                        <span className="font-semibold tracking-wide text-sm lg:text-md text-nowrap">{match.home_team_name}</span>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-center w-1/3 gap-1">
-                                    <span className="text-4xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-600 to-blue-400">VS</span>
+                                <div className="flex flex-col items-center w-1/3 gap-2">
+                                    {match.status === "jugándose" || match.status === "finalizado" ? (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className={clsx("text-xl font-semibold text-white px-2 rounded-sm",
+                                                        match.status === "jugándose" && "bg-emerald-600",
+                                                        match.status === "finalizado" && "bg-orange-600"
+                                                    )}>{match.home_team_goals} : {match.away_team_goals}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent className={clsx("font-bold border-none",
+                                                    match.status === "jugándose" && "bg-emerald-600",
+                                                    match.status === "finalizado" && "bg-orange-600"
+                                                )}>
+                                                    <p>Resultado del partido</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+
+
+                                    ) : (
+                                        <span className="text-4xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-600 to-blue-400">VS</span>
+                                    )}
                                     {match.prediction_away_team_goals !== null && match.prediction_home_team_goals !== null ? (
-                                        <span className="text-lg font-semibold text-white bg-primary px-2 rounded-full">{match.prediction_home_team_goals} : {match.prediction_away_team_goals}</span>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="text-sm font-semibold text-white bg-primary/30 px-2 rounded-sm">{match.prediction_home_team_goals} : {match.prediction_away_team_goals}</span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Tú predicción</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+
+
                                     ) : (
                                         <span className="dark:text-white p-1.5 h-max rounded-md bg-primary/20 xl:group-hover:bg-primary transition-all group-active:bg-primary text-xs">
                                             {isAdmin ? "Editar" : "Predecir"}
@@ -64,7 +102,7 @@ export default async function Page() {
                                             priority
                                             className="object-cover object-center rounded-lg w-16 h-12 shadow-md"
                                         />
-                                        <span className="font-medium text-sm lg:text-lg text-nowrap">{match.away_team_name}</span>
+                                        <span className="font-semibold tracking-wide text-sm lg:text-md text-nowrap">{match.away_team_name}</span>
                                     </div>
                                 </div>
                             </CardContent>

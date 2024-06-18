@@ -3,8 +3,10 @@
 
 import { MatchDisplayed } from "../types/types";
 import { pool } from "./postgrePool";
+import { unstable_noStore as noStore } from 'next/cache';
 
 export async function getMatchesDisplayed(userId: string): Promise<MatchDisplayed[]> {
+    noStore()
     const client = await pool.connect();
 
     try {

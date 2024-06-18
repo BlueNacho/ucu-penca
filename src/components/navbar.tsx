@@ -31,7 +31,7 @@ export default async function Navbar() {
                             Ranking</Link>
 
 
-                        <Link href="/perfil" className="ml-auto flex items-center group bg-primary/10 hover:bg-primary transition-all rounded-lg border">
+                        <Link href="/perfil" className="ml-auto flex items-center group bg-primary/10 hover:bg-primary/50 transition-all rounded-lg border">
                             <span className="hidden transition-all xl:block px-3 text-sm">{session.user?.name}</span>
                             <span className="ml-auto border dark:border-foreground/30 bg-muted/80 dark:bg-muted/50 p-2 rounded-r-lg hover:bg-muted transition-all cursor-pointer">
                                 <User className="text-foreground/30 dark:text-foreground" />

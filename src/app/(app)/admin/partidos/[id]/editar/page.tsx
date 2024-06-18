@@ -13,8 +13,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     return (
         <Card className="h-full w-full transition-all group relative">
-
-            <CardContent className="py-3 flex flex-row justify-between items-center w-max mx-auto">
+            <CardContent className="py-3 flex flex-row justify-center items-center lg:w-[85%] xl:w-[60%] mx-auto">
                 <UpdateMatchForm matchId={id} match={match} teams={teams} />
             </CardContent>
         </Card>

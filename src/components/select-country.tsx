@@ -15,15 +15,12 @@ import { Team } from '@/types/types';
 interface SelectCountryProps {
     field: any;
     teams: Team[];
-    defaultValue?: string;
+    disabled?: boolean;
 }
 
-export default function SelectCountry({ field, teams, defaultValue }: SelectCountryProps) {
-
-    console.log(defaultValue);
-    
+export default function SelectCountry({ field, teams, disabled }: SelectCountryProps) {
     return (
-        <Select onValueChange={field.onChange} defaultValue={defaultValue}>
+        <Select onValueChange={field.onChange} value={field.value} disabled={disabled}>
             <SelectTrigger className="w-full">
                 <SelectValue placeholder="Seleccione equipo" />
             </SelectTrigger>
@@ -43,6 +40,5 @@ export default function SelectCountry({ field, teams, defaultValue }: SelectCoun
                 </SelectGroup>
             </SelectContent>
         </Select>
-
     );
 }

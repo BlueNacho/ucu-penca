@@ -1,4 +1,4 @@
-type MatchStatus = "pending" | "ongoing" | "finished";
+type MatchStatus = "pendiente" | "jugándose" | "finalizado";
 
 export interface MatchRaw {
     id: string;
@@ -25,7 +25,7 @@ export interface MatchDisplayed {
     start_time: string;  // Assuming ISO string format
     phase: string;
     group_name: string | null;
-    status: string;
+    status: MatchStatus;
     prediction_home_team_goals: number | null;
     prediction_away_team_goals: number | null;
 }

@@ -5,6 +5,7 @@ import { UpdateMatchSchema } from "@/schemas";
 import { pool } from "@/data/postgrePool";
 
 export async function updateMatch(matchId: string, values: z.infer<typeof UpdateMatchSchema>) {
+    console.log(values)
     const validatedFields = UpdateMatchSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -26,7 +27,7 @@ export async function updateMatch(matchId: string, values: z.infer<typeof Update
         `, [home_team_id, away_team_id, home_team_goals, away_team_goals, group_name, phase, start_time, status, matchId]);
 
         await client.query('COMMIT');
-
+        
         return { success: "Partido actualizado con exito" };
     } catch (error) {
         await client.query('ROLLBACK');

@@ -40,7 +40,6 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isAdminRoute) {
-        console.log(isAdmin)
         if (!isAdmin) {
             return Response.redirect(new URL('/auth/login', nextUrl));
         }

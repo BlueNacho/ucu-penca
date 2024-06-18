@@ -1,12 +1,12 @@
 import Link from "next/link"
 
 import RegisterForm from "@/components/forms/register-form"
-import { fetchTeams } from "@/data/teams";
-import { fetchCareers } from "@/data/careers";
+import { getTeams } from "@/data/teams";
+import { getCareers } from "@/data/careers";
 
 export default async function Page() {
-    const teams = await fetchTeams();
-    const careers = await fetchCareers();
+    const teams = await getTeams();
+    const careers = await getCareers();
 
     return (
         <div className="mx-auto grid w-[350px] gap-6">

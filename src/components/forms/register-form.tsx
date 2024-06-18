@@ -26,7 +26,6 @@ import { RegisterSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Image from "next/image";
 import { LogIn } from "lucide-react";
 import { register } from "@/actions/auth";
 import FormError from "./form-error";
@@ -198,28 +197,7 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                                 <FormItem>
                                     <FormLabel htmlFor="champion">&#x1f3c6; Campeón</FormLabel>
                                     <FormControl>
-
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Seleccione equipo" />
-                                            </SelectTrigger>
-                                            <SelectContent {...field}>
-                                                <SelectGroup>
-                                                    <SelectLabel>Selecciones</SelectLabel>
-                                                    {teams.map((team, index) => (
-                                                        <SelectItem key={index} value={team.id.toString()}>
-                                                            <div className="flex flex-row items-center justify-between w-full gap-2 flex-nowrap overflow-hidden text-ellipsis">
-                                                                <div className="rounded-sm w-[30px] h-[25px] overflow-hidden relative">
-                                                                    <Image src={`https://flagcdn.com/${team.code}.svg`} alt="Country flag" fill className="w-full h-full" style={{ objectFit: 'cover', objectPosition: 'center' }} />
-                                                                </div>
-                                                                {team.name}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-
+                                        <SelectCountry field={field} teams={teams} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -233,35 +211,14 @@ export default function RegisterForm({ teams, careers }: { teams: Team[], career
                                 <FormItem>
                                     <FormLabel htmlFor="runnerUp">&#x1f948; Sub-campeón</FormLabel>
                                     <FormControl>
-
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Seleccione equipo" />
-                                            </SelectTrigger>
-                                            <SelectContent {...field}>
-                                                <SelectGroup>
-                                                    <SelectLabel>Selecciones</SelectLabel>
-                                                    {teams.map((team, index) => (
-                                                        <SelectItem key={index} value={team.id.toString()}>
-                                                            <div className="flex flex-row items-center justify-between w-full gap-2 flex-nowrap overflow-hidden text-ellipsis">
-                                                                <div className="rounded-sm w-[30px] h-[25px] overflow-hidden relative">
-                                                                    <Image src={`https://flagcdn.com/${team.code}.svg`} alt="Country flag" fill className="w-full h-full" style={{ objectFit: 'cover', objectPosition: 'center' }} />
-                                                                </div>
-                                                                {team.name}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-
+                                        <SelectCountry field={field} teams={teams} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
-                    
+
                     <Button type="submit" className="w-full text-white" disabled={isPending}>
                         Crear cuenta&nbsp;<LogIn size={20} />
                     </Button>

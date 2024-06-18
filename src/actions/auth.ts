@@ -5,11 +5,8 @@ import { LoginSchema, RegisterSchema } from "@/schemas";
 import bcrypt from "bcrypt";
 import { getUserByEmail } from "@/data/users";
 import { pool } from "@/data/postgrePool";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { cookies } from "next/headers";
 import { encrypt } from "@/lib/auth-utils";
-import { error } from "console";
-import { set } from "date-fns";
 
 export async function login(values: z.infer<typeof LoginSchema>) {
     // Verify credentials && get the user

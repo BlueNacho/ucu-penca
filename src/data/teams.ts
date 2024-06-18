@@ -3,7 +3,7 @@
 import { Team } from "../types/types";
 import { pool } from "./postgrePool";
 
-export async function fetchTeams() {
+export async function getTeams() {
     const client = await pool.connect();
     try {
         const res = await client.query("SELECT * FROM teams");

@@ -18,7 +18,7 @@ export const RegisterSchema = z.object({
     path: ["runnerUp"],
 });
 
-export const MatchEditSchema = z.object({
+export const UpdateMatchSchema = z.object({
     home_team_id: z.string(),
     away_team_id: z.string(),
     home_team_goals: z.number().min(0, "Goles del equipo local inválidos"),
@@ -26,7 +26,7 @@ export const MatchEditSchema = z.object({
     start_time: z.date(),
     phase: z.string().min(1, "Fase inválida"),
     group_name: z.string().min(1, "Nombre de grupo inválido"),
-    status: z.enum(["Scheduled", "In Progress", "Completed"]),
+    status: z.enum(["pendiente", "jugándose", "finalizado"]),
 }).refine((data) => data.home_team_id !== data.away_team_id, {
     message: "El equipo local y el visitante no pueden ser iguales",
     path: ["away_team_id"],

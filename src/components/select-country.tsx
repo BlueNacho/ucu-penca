@@ -13,34 +13,36 @@ import Image from 'next/image';
 import { Team } from '@/types/types';
 
 interface SelectCountryProps {
-    id: string;
+    field: any;
     teams: Team[];
+    defaultValue?: string;
 }
 
-export default function SelectCountry({ id, teams }: SelectCountryProps) {
+export default function SelectCountry({ field, teams, defaultValue }: SelectCountryProps) {
+
+    console.log(defaultValue);
+    
     return (
-        <div id={id}>
-            <Select>
-                <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Seleccionar equipo" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>Selecciones</SelectLabel>
-                        {teams.map((team, index) => (
-                            <SelectItem key={index} value={team.id.toString()}>
-                                <div className="flex flex-row items-center justify-between w-full gap-2 flex-nowrap overflow-hidden text-ellipsis">
-                                    <div className="rounded-sm w-[30px] h-[25px] overflow-hidden relative">
-                                        <Image src={`https://flagcdn.com/${team.code}.svg`} alt="Country flag" fill className="w-full h-full" style={{ objectFit: 'cover', objectPosition: 'center' }} />
-                                    </div>
-                                    {team.name}
+        <Select onValueChange={field.onChange} defaultValue={defaultValue}>
+            <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione equipo" />
+            </SelectTrigger>
+            <SelectContent {...field}>
+                <SelectGroup>
+                    <SelectLabel>Selecciones</SelectLabel>
+                    {teams.map((team, index) => (
+                        <SelectItem key={index} value={team.id.toString()}>
+                            <div className="flex flex-row items-center justify-between w-full gap-2 flex-nowrap overflow-hidden text-ellipsis">
+                                <div className="rounded-sm w-[30px] h-[25px] overflow-hidden relative">
+                                    <Image src={`https://flagcdn.com/${team.code}.svg`} alt="Country flag" fill className="w-full h-full" style={{ objectFit: 'cover', objectPosition: 'center' }} />
                                 </div>
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-        </div>
+                                {team.name}
+                            </div>
+                        </SelectItem>
+                    ))}
+                </SelectGroup>
+            </SelectContent>
+        </Select>
 
     );
 }

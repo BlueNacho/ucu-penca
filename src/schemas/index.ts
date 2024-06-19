@@ -31,3 +31,4 @@ export const UpdateMatchSchema = z.object({
     message: "El equipo local y el visitante no pueden ser iguales",
     path: ["away_team_id"],
 });
+

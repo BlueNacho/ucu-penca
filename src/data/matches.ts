@@ -31,6 +31,7 @@ export async function getMatchesDisplayed(userId: string): Promise<MatchDisplaye
             JOIN teams ht ON m.home_team_id = ht.id
             JOIN teams at ON m.away_team_id = at.id
             LEFT JOIN predictions p ON m.id = p.match_id AND p.user_id = $1
+            ORDER BY m.start_time ASC
         `;
         const res = await client.query(query, [userId]);
         return res.rows as MatchDisplayed[];

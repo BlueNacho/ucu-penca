@@ -37,6 +37,7 @@ import { updateMatch } from "@/actions/matches";
 import { MatchDisplayed, Team } from "@/types/types";
 import { z } from "zod";
 import { format } from "path";
+import { DateTimePicker } from "../ui/datetime-picker";
 
 export default function UpdateMatchForm({ matchId, match, teams }: { matchId: string, match: MatchDisplayed, teams: Team[] }) {
     const [error, setError] = useState<string | undefined>("");
@@ -101,12 +102,12 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                 start_time: true,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.watch('status')]);
 
     const onSubmit = (values: z.infer<typeof UpdateMatchSchema>): void => {
         setError("");
         setSuccess("");
-        console.log(values);
 
         startTransition(() => {
             updateMatch(matchId, values)
@@ -242,30 +243,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                         <FormItem className="flex flex-col">
                             <FormLabel>Fecha y hora de inicio</FormLabel>
                             <FormControl>
-                                <Popover >
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "justify-start text-left font-normal",
-                                                !date && "text-muted-foreground"
-                                            )}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {date ? format(date, "PPP") : <span>Fecha</span>}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                        <Calendar
-                                            mode="single"
-                                            selected={date}
-                                            onSelect={setDate}
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-
-                                {/* <Input {...field} disabled={disabledFields.start_time} /> */}
+                                <DateTimePicker granularity="second" jsDate={field.value} onJsDateChange={field.onChange} hourCycle={24} isDisabled={disabledFields.start_time}/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>

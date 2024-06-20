@@ -101,8 +101,8 @@ const seedDatabase = async () => {
         home_team_goals INT DEFAULT 0,
         away_team_goals INT DEFAULT 0,
         PRIMARY KEY (match_id, user_id),
-        FOREIGN KEY (match_id) REFERENCES matches(id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
 

@@ -352,7 +352,7 @@ const DateTimePicker = React.forwardRef<
                     <Button
                         {...buttonProps}
                         variant="ghost"
-                        className="border-r"
+                        className="border-r rounded-none"
                         disabled={props.isDisabled}
                         onClick={() => {
                             state.setOpen(true);
@@ -371,7 +371,7 @@ const DateTimePicker = React.forwardRef<
             <DateField {...fieldProps} value={currentValue()} />
             <div className={cn('-ml-2 mr-2 h-5 w-5', !showClearButton && 'hidden')}>
                 <X
-                    className={cn('h-5 w-5 cursor-pointer text-primary/30', !jsDatetime && 'hidden')}
+                    className={cn('h-5 w-5 cursor-pointer text-foreground/80', !jsDatetime && 'hidden')}
                     onClick={() => setJsDatetime(null)}
                 />
             </div>

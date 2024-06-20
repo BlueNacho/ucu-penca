@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -18,32 +16,34 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
-import { CalendarIcon, Upload } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateMatchSchema } from "@/schemas";
 import SelectCountry from "../select-country";
-import { updateMatch } from "@/actions/matches";
+import { deleteMatch, updateMatch } from "@/actions/matches";
 import { MatchDisplayed, Team } from "@/types/types";
 import { z } from "zod";
-import { format } from "path";
 import { DateTimePicker } from "../ui/datetime-picker";
 
 export default function UpdateMatchForm({ matchId, match, teams }: { matchId: string, match: MatchDisplayed, teams: Team[] }) {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
-    const [date, setDate] = useState<Date>()
 
     const form = useForm<z.infer<typeof UpdateMatchSchema>>({
         resolver: zodResolver(UpdateMatchSchema),
@@ -102,7 +102,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                 start_time: true,
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.watch('status')]);
 
     const onSubmit = (values: z.infer<typeof UpdateMatchSchema>): void => {
@@ -118,13 +118,22 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
         });
     }
 
+    const onDelete = () => {
+        setError("");
+        setSuccess("");
+
+        startTransition(() => {
+            deleteMatch(matchId)
+        });
+    }
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 w-full">
                 <FormError message={error} />
                 <FormSuccess message={success} />
 
-                <div className="flex flex-col gap-2 p-3 rounded-lg border bg-primary/5">
+                <div className="flex flex-col gap-2 p-3 rounded-lg bg-primary/10">
 
                     <div className="flex flex-row items-center">
 
@@ -142,7 +151,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                         />
 
                         <div className="flex flex-col items-center w-1/4 gap-1">
-                            <span className="text-2xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-400 to-blue-600">VS</span>
+                            <span className="lg:text-2xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-400 to-blue-600">VS</span>
                         </div>
 
                         <FormField
@@ -243,7 +252,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                         <FormItem className="flex flex-col">
                             <FormLabel>Fecha y hora de inicio</FormLabel>
                             <FormControl>
-                                <DateTimePicker granularity="second" jsDate={field.value} onJsDateChange={field.onChange} hourCycle={24} isDisabled={disabledFields.start_time}/>
+                                <DateTimePicker granularity="second" jsDate={field.value} onJsDateChange={field.onChange} hourCycle={24} isDisabled={disabledFields.start_time} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -272,10 +281,35 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                         </FormItem>
                     )}
                 />
+                <div className="flex flex-row gap-2">
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button type="button" variant="outline" size="icon" className="text-white flex-shrink" disabled={isPending}>
+                                <Trash2 size={20} />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Esta acción borrará el partido.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction className="text-white" onClick={() => onDelete()}>Confirmar</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
 
-                <Button type="submit" className="w-full text-white" disabled={isPending}>
-                    <Upload size={20} />&nbsp;Actualizar Partido
-                </Button>
+
+                    
+                    <Button type="submit" className="text-white flex-grow" disabled={isPending}>
+                        <Upload size={20} />&nbsp;Actualizar Partido
+                    </Button>
+
+                    
+                </div>
             </form>
         </Form>
     );

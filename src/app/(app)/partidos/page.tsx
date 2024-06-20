@@ -87,7 +87,7 @@ export default async function Page() {
 
                                     ) : (
                                         <span className="dark:text-white p-1.5 h-max rounded-md bg-primary/20 xl:group-hover:bg-primary transition-all group-active:bg-primary text-xs">
-                                            {isAdmin ? "Editar" : "Predecir"}
+                                            {isAdmin ? "Actualizar" : "Predecir"}
                                         </span>
                                     )}
 

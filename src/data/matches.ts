@@ -23,14 +23,16 @@ export async function getMatchesDisplayed(userId: string): Promise<MatchDisplaye
                 m.away_team_goals,
                 m.start_time,
                 m.phase,
+                p.name AS phase_name,
                 m.group_name,
                 m.status,
-                p.home_team_goals AS prediction_home_team_goals,
-                p.away_team_goals AS prediction_away_team_goals
+                pr.home_team_goals AS prediction_home_team_goals,
+                pr.away_team_goals AS prediction_away_team_goals
             FROM matches m
             JOIN teams ht ON m.home_team_id = ht.id
             JOIN teams at ON m.away_team_id = at.id
-            LEFT JOIN predictions p ON m.id = p.match_id AND p.user_id = $1
+            JOIN phases p ON m.phase = p.id
+            LEFT JOIN predictions pr ON m.id = pr.match_id AND pr.user_id = $1
             ORDER BY m.start_time ASC
         `;
         const res = await client.query(query, [userId]);
@@ -60,11 +62,13 @@ export async function getAdminMatchById(matchId: string): Promise<MatchDisplayed
                 m.away_team_goals,
                 m.start_time,
                 m.phase,
+                p.name AS phase_name,
                 m.group_name,
                 m.status
             FROM matches m
             JOIN teams ht ON m.home_team_id = ht.id
             JOIN teams at ON m.away_team_id = at.id
+            JOIN phases p ON m.phase = p.id
             WHERE m.id = $1
         `;
         const res = await client.query(query, [matchId]);

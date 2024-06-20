@@ -29,10 +29,10 @@ export default async function Page() {
                 {matches.map((match, index) => (
                     <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `/partidos/${match.id}/ver`} key={index}>
                         <Card key={index} className={clsx("h-max transition-all xl:hover:scale-[101%] focus:scale-[100%] group relative",
-                            match.status === "finalizado" ? "border-orange-600" : match.status === "jugándose" ? "border-emerald-600" : "active:border-primary xl:hover:border-primary"
+                            match.status === "finalizado" ? "border-emerald-600" : match.status === "jugándose" ? "border-primary" : "active:border-primary xl:hover:border-primary"
                         )}>
                             <span className={clsx("absolute right-0",
-                                match.status === "finalizado" ? "bg-orange-600" : match.status === "jugándose" ? "bg-emerald-600" : "bg-gray-500",
+                                match.status === "finalizado" ? "bg-emerald-600" : match.status === "jugándose" ? "bg-primary" : "bg-gray-500",
                                 "text-white text-xs font-semibold px-2 rounded-bl-md rounded-tr-md"
                             )}>{match.status}</span>
                             <CardContent className="py-3 px-8 flex flex-row justify-between items-center">
@@ -55,13 +55,13 @@ export default async function Page() {
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <span className={clsx("text-xl font-semibold text-white px-2 rounded-sm",
-                                                        match.status === "jugándose" && "bg-emerald-600",
-                                                        match.status === "finalizado" && "bg-orange-600"
-                                                    )}>{match.home_team_goals} : {match.away_team_goals}</span>
+                                                        match.status === "jugándose" && "bg-primary",
+                                                        match.status === "finalizado" && "bg-emerald-600"
+                                                    )}>{match.home_team_goals} - {match.away_team_goals}</span>
                                                 </TooltipTrigger>
                                                 <TooltipContent className={clsx("font-bold border-none",
-                                                    match.status === "jugándose" && "bg-emerald-600",
-                                                    match.status === "finalizado" && "bg-orange-600"
+                                                    match.status === "jugándose" && "bg-primary",
+                                                    match.status === "finalizado" && "bg-emerald-600"
                                                 )}>
                                                     <p>Resultado del partido</p>
                                                 </TooltipContent>
@@ -76,7 +76,7 @@ export default async function Page() {
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <span className="text-sm font-semibold text-white bg-primary/30 px-2 rounded-sm">{match.prediction_home_team_goals} : {match.prediction_away_team_goals}</span>
+                                                    <span className="text-sm font-semibold text-white bg-primary/30 px-2 rounded-sm">{match.prediction_home_team_goals} - {match.prediction_away_team_goals}</span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
                                                     <p>Tú predicción</p>
@@ -113,7 +113,7 @@ export default async function Page() {
                                 <div className="text-nowrap">
                                     <span className="uppercase">GRUPO {match["group_name"]}</span>
                                     <span>&nbsp; - &nbsp;</span>
-                                    <span className="uppercase">{match.phase}</span>
+                                    <span className="uppercase">{match.phase_name}</span>
                                 </div>
                             </CardFooter>
                         </Card>

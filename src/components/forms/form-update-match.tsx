@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -29,18 +31,18 @@ import {
 } from "@/components/ui/alert-dialog"
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
-import { Trash2, Upload } from "lucide-react";
+import { Minus, Trash2, Upload } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateMatchSchema } from "@/schemas";
 import SelectCountry from "../select-country";
 import { deleteMatch, updateMatch } from "@/actions/matches";
-import { MatchDisplayed, Team } from "@/types/types";
+import { MatchDisplayed, Team, Phase } from "@/types/types";
 import { z } from "zod";
 import { DateTimePicker } from "../ui/datetime-picker";
 
-export default function UpdateMatchForm({ matchId, match, teams }: { matchId: string, match: MatchDisplayed, teams: Team[] }) {
+export default function UpdateMatchForm({ matchId, match, teams, phases}: { matchId: string, match: MatchDisplayed, teams: Team[], phases: Phase[]}) {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
@@ -53,7 +55,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
             group_name: match.group_name || undefined,
             home_team_goals: match.home_team_goals,
             home_team_id: match.home_team_id.toString(),
-            phase: match.phase,
+            phase: match.phase.toString(),
             start_time: new Date(match.start_time),
             status: match.status,
         }
@@ -135,7 +137,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
 
                 <div className="flex flex-col gap-2 p-3 rounded-lg bg-primary/10">
 
-                    <div className="flex flex-row items-center">
+                    <div className="flex flex-row gap-2 items-center">
 
                         <FormField
                             control={form.control}
@@ -149,10 +151,6 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                                 </FormItem>
                             )}
                         />
-
-                        <div className="flex flex-col items-center w-1/4 gap-1">
-                            <span className="lg:text-2xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-400 to-blue-600">VS</span>
-                        </div>
 
                         <FormField
                             control={form.control}
@@ -171,7 +169,7 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                     <div className="flex flex-col items-center gap-1 bg-gradient-to-tr from-primary/30 to-primary/80 p-2 rounded-lg">
                         <span className="text-card-foreground uppercase font-black tracking-wider">Marcador</span>
 
-                        <div className="grid grid-cols-2 gap-2 ">
+                        <div className="flex flex-row gap-2 items-center">
                             <FormField
                                 control={form.control}
                                 name="home_team_goals"
@@ -190,6 +188,10 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                                     </FormItem>
                                 )}
                             />
+
+                            <span className="font-bold">
+                                -
+                            </span>
 
                             <FormField
                                 control={form.control}
@@ -236,9 +238,26 @@ export default function UpdateMatchForm({ matchId, match, teams }: { matchId: st
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Fase</FormLabel>
-                                <FormControl>
+
+                                <Select onValueChange={field.onChange} value={field.value} disabled={disabledFields.phase}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccione fase" />
+                                    </SelectTrigger>
+                                    <SelectContent {...field}>
+                                        <SelectGroup>
+                                            <SelectLabel>Fase</SelectLabel>
+                                            {phases.map((phase) => (
+                                                <SelectItem key={phase.id} value={phase.id.toString()}>
+                                                    {phase.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+
+                                {/* <FormControl>
                                     <Input {...field} disabled={disabledFields.phase} />
-                                </FormControl>
+                                </FormControl> */}
                                 <FormMessage />
                             </FormItem>
                         )}

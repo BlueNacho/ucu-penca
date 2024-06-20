@@ -22,8 +22,9 @@ export interface MatchDisplayed {
     away_team_code: string;
     home_team_goals: number;
     away_team_goals: number;
-    start_time: string;  // Assuming ISO string format
-    phase: string;
+    start_time: string;
+    phase: number;
+    phase_name: string;
     group_name: string | null;
     status: MatchStatus;
     prediction_home_team_goals: number | null;

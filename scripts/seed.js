@@ -65,12 +65,12 @@ const seedDatabase = async () => {
         home_team_goals INT DEFAULT 0,
         away_team_goals INT DEFAULT 0,
         start_time TIMESTAMP NOT NULL,
-        phase VARCHAR(255) NOT NULL,
+        phase INT NOT NULL,
         group_name group_name,
         status match_status NOT NULL,
         FOREIGN KEY (home_team_id) REFERENCES teams(id),
         FOREIGN KEY (away_team_id) REFERENCES teams(id),
-        FOREIGN KEY (phase) REFERENCES phases(name)
+        FOREIGN KEY (phase) REFERENCES phases(id)
       );
     `);
 
@@ -100,6 +100,7 @@ const seedDatabase = async () => {
         user_id UUID NOT NULL, 
         home_team_goals INT DEFAULT 0,
         away_team_goals INT DEFAULT 0,
+        score INT DEFAULT 0,
         PRIMARY KEY (match_id, user_id),
         FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

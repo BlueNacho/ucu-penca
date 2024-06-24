@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     const teams = await getTeams();
 
     return (
-        <Card className="h-full sm:w-[90%] md:w-[90%] lg:w-[60%] xl:w-[50%] mx-auto transition-all group relative">
+        <Card className="h-max sm:w-[90%] md:w-[90%] lg:w-[60%] xl:w-[50%] mx-auto transition-all group relative">
             <CardContent className="p-5 flex flex-row justify-center items-center">
                 <UpdateMatchForm matchId={id} match={match} teams={teams} phases={phases} />
             </CardContent>

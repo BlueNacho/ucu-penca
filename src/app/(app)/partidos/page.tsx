@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { SquarePlus } from "lucide-react";
 import DrawerMatch from "@/components/drawer-match";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import CardMatch from "@/components/card-match";
+import { CardMatch } from "@/components/card-match";
 
 export default async function Page() {
 
@@ -32,10 +32,8 @@ export default async function Page() {
     const playingMatches = [...matches].filter(match => match.status === "jugándose");
 
     return (
-        <div className="w-full">
-
-
-            <Tabs defaultValue="pendiente" className="w-full flex flex-col ">
+        <div className="w-full h-full">
+            <Tabs defaultValue="pendiente" className="w-full flex flex-col h-full">
                 <div className="flex flex-col md:flex-row justify-center items-center w-full mb-2 gap-2 md:gap-6">
                     <TabsList className="w-max ">
                         <TabsTrigger value="pendiente">Próximos</TabsTrigger>
@@ -54,8 +52,8 @@ export default async function Page() {
                     }
                 </div>
 
-                <TabsContent value="pendiente" className="text-center">
-                    {pendingMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos pendientes por el momento</p>}
+                <TabsContent value="pendiente" className="text-center pb-4">
+                    {pendingMatches.length === 0 && <p className="italic text-foreground/30">No hay partidos pendientes por el momento</p>}
                     <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
                         {pendingMatches.map((match, index) => (
                             <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>
@@ -66,8 +64,8 @@ export default async function Page() {
                         ))}
                     </div>
                 </TabsContent>
-                <TabsContent value="jugándose" className="text-center">
-                    {playingMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos jugándose por el momento</p>}
+                <TabsContent value="jugándose" className="text-center pb-4">
+                    {playingMatches.length === 0 && <p className="italic text-foreground/30">No hay partidos jugándose por el momento</p>}
                     <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
                         {playingMatches.map((match, index) => (
                             <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>
@@ -78,8 +76,8 @@ export default async function Page() {
                         ))}
                     </div>
                 </TabsContent>
-                <TabsContent value="finalizado">
-                    {finishedMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos finalizados por el momento</p>}
+                <TabsContent value="finalizado" className="text-center pb-4">
+                    {finishedMatches.length === 0 && <p className="italic text-foreground/30">No hay partidos finalizados por el momento</p>}
                     <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
                         {finishedMatches.map((match, index) => (
                             <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>

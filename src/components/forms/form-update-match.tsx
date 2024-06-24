@@ -139,8 +139,6 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
         });
     }
 
-    
-
     const onDelete = () => {
         setError("");
         setSuccess("");

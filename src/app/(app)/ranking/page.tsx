@@ -26,7 +26,7 @@ export default async function Page() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center pb-3">
             {!isAdmin ?
                 (
                     <span className="flex w-full py-2 px-4 bg-primary rounded-t-md">
@@ -40,7 +40,7 @@ export default async function Page() {
                     </span>
                 )
             }
-            <Card className="w-full rounded-none">
+            <Card className="w-full rounded-none border-primary">
                 <Table className="text-lg">
                     <TableHeader>
                         <TableRow>
@@ -52,7 +52,7 @@ export default async function Page() {
                     <TableBody>
                         {scoreboard.map((user, index) => (
                             <>
-                                <TableRow key={user.id} className={clsx(session.user?.id === user.id && "bg-primary/70")}>
+                                <TableRow key={index} className={clsx(session.user?.id === user.id && "bg-primary/70")}>
                                     <TableCell className="text-center w-1/3 bg-primary/30">{index + 1}</TableCell>
                                     <TableCell className="text-center w-1/3 bg-primary/20">{user.name}</TableCell>
                                     <TableCell className="text-center w-1/3 bg-primary/10">{user.score}</TableCell>
@@ -62,7 +62,7 @@ export default async function Page() {
                     </TableBody>
                 </Table>
             </Card>
-            <span className="flex w-full py-2 items-center justify-center bg-card rounded-b-md">
+            <span className="flex w-full py-1 items-center justify-center bg-primary rounded-b-md">
             </span>
         </div>
     );

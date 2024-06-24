@@ -42,8 +42,6 @@ export default function Navbar({name} : {name: string}) {
                                 <User className="text-foreground/30 dark:text-foreground" />
                             </span>
                         </Link>
-
-
                     </div>
                 </div>
             </nav >

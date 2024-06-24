@@ -41,7 +41,7 @@ const teams = [
 const users = [
   {
     first_name: "Admin",
-    last_name: "User",
+    last_name: "Admin",
     email: "admin@example.com",
     password: "securepassword",
     career: null,
@@ -50,10 +50,10 @@ const users = [
     is_admin: true,
   },
   {
-    first_name: "John",
-    last_name: "Doe",
-    email: "john.doe@example.com",
-    password: "password123",
+    first_name: "User",
+    last_name: "User",
+    email: "user@example.com",
+    password: "password",
     career: 4,
     champion_team_id: 1,
     runner_up_team_id: 2,

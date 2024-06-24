@@ -41,25 +41,33 @@ import { deleteMatch, updateMatch } from "@/actions/matches";
 import { MatchDisplayed, Team, Phase } from "@/types/types";
 import { z } from "zod";
 import { DateTimePicker } from "../ui/datetime-picker";
+import { watch } from "fs";
+import clsx from "clsx";
+import { calculateScoresByMatchId } from "@/actions/admin";
 
-export default function UpdateMatchForm({ matchId, match, teams, phases}: { matchId: string, match: MatchDisplayed, teams: Team[], phases: Phase[]}) {
+export default function UpdateMatchForm({ matchId, match, teams, phases }: { matchId: string, match: MatchDisplayed, teams: Team[], phases: Phase[] }) {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
+    const [isFinalModeEnabled, enableFinalMode] = useState(false);
 
     const form = useForm<z.infer<typeof UpdateMatchSchema>>({
         resolver: zodResolver(UpdateMatchSchema),
         defaultValues: {
             away_team_goals: match.away_team_goals,
             away_team_id: match.away_team_id.toString(),
-            group_name: match.group_name || undefined,
+            group_name: match.group_name || "",
             home_team_goals: match.home_team_goals,
             home_team_id: match.home_team_id.toString(),
             phase: match.phase.toString(),
             start_time: new Date(match.start_time),
             status: match.status,
+            champion: "",
+            runnerUp: "",
         }
     });
+
+    const finalistTeams = teams.filter(team => parseInt(team.id) === match.home_team_id || parseInt(team.id) === match.away_team_id);
 
     const [disabledFields, setDisabledFields] = useState({
         home_team_id: false,
@@ -73,6 +81,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
 
     useEffect(() => {
         const status = form.watch('status');
+        const phase = form.watch('phase');
+
         if (status === 'pendiente') {
             setDisabledFields({
                 home_team_id: false,
@@ -83,6 +93,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                 phase: false,
                 start_time: false,
             });
+            enableFinalMode(false);
+            form.setValue("champion", "");
+            form.setValue("runnerUp", "");
         } else if (status === 'jugándose') {
             setDisabledFields({
                 home_team_id: true,
@@ -93,6 +106,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                 phase: true,
                 start_time: true,
             });
+            enableFinalMode(false);
+            form.setValue("champion", "");
+            form.setValue("runnerUp", "");
         } else if (status === 'finalizado') {
             setDisabledFields({
                 home_team_id: true,
@@ -103,6 +119,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                 phase: true,
                 start_time: true,
             });
+            if (phase === "6") {
+                enableFinalMode(true);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.watch('status')]);
@@ -110,7 +129,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
     const onSubmit = (values: z.infer<typeof UpdateMatchSchema>): void => {
         setError("");
         setSuccess("");
-
+        
         startTransition(() => {
             updateMatch(matchId, values)
                 .then((data) => {
@@ -120,6 +139,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
         });
     }
 
+    
+
     const onDelete = () => {
         setError("");
         setSuccess("");
@@ -128,6 +149,15 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
             deleteMatch(matchId)
         });
     }
+
+    const isGroupNameEnabled = ["1", "2", "3"].includes(form.watch("phase"));
+
+    const handlePhaseChange = (value: string) => {
+        form.setValue("phase", value); // Actualizar el valor de la fase en el formulario
+        if (!["1", "2", "3"].includes(value)) {
+            form.setValue("group_name", ""); // Resetear group_name si la fase no es "1", "2" o "3"
+        }
+    };
 
     return (
         <Form {...form}>
@@ -216,7 +246,6 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                     </div>
                 </div>
 
-
                 <div className="grid grid-cols-2 gap-2">
                     <FormField
                         control={form.control}
@@ -225,7 +254,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                             <FormItem>
                                 <FormLabel>Nombre del grupo</FormLabel>
                                 <FormControl>
-                                    <Input {...field} disabled={disabledFields.group_name} />
+                                    <Input {...field} disabled={disabledFields.group_name || !isGroupNameEnabled} onChange={(e) => field.onChange(e.target.value.toUpperCase())} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -239,7 +268,10 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                             <FormItem>
                                 <FormLabel>Fase</FormLabel>
 
-                                <Select onValueChange={field.onChange} value={field.value} disabled={disabledFields.phase}>
+                                <Select onValueChange={(value) => {
+                                    handlePhaseChange(value)
+                                    field.onChange
+                                }} value={field.value} disabled={disabledFields.phase}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Seleccione fase" />
                                     </SelectTrigger>
@@ -255,9 +287,6 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                                     </SelectContent>
                                 </Select>
 
-                                {/* <FormControl>
-                                    <Input {...field} disabled={disabledFields.phase} />
-                                </FormControl> */}
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -300,10 +329,43 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                         </FormItem>
                     )}
                 />
+
+                <div className={clsx("grid grid-cols-2 border gap-2 p-3 bg-primary/5 rounded-lg",
+                    !isFinalModeEnabled && "hidden"
+                )}>
+                    <FormField
+                        control={form.control}
+                        name="champion"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel htmlFor="champion">&#x1f3c6; Campeón</FormLabel>
+                                <FormControl>
+                                    <SelectCountry field={field} teams={finalistTeams} />
+                                </FormControl>
+                                <FormMessage className="text-white"/>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="runnerUp"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel htmlFor="runnerUp">&#x1f948; Sub-campeón</FormLabel>
+                                <FormControl>
+                                    <SelectCountry field={field} teams={finalistTeams} />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
                 <div className="flex flex-row gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button type="button" variant="outline" size="icon" className="text-white flex-shrink" disabled={isPending}>
+                            <Button type="button" variant="destructive" size="icon" className="text-white flex-shrink" disabled={isPending}>
                                 <Trash2 size={20} />
                             </Button>
                         </AlertDialogTrigger>
@@ -311,7 +373,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                             <AlertDialogHeader>
                                 <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Esta acción borrará el partido.
+                                    Esta acción borrará el partido. <br />
+                                    <strong className="text-destructive">Esta acción no se podrá deshacer.</strong>
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -321,13 +384,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases}: { matc
                         </AlertDialogContent>
                     </AlertDialog>
 
-
-                    
-                    <Button type="submit" className="text-white flex-grow" disabled={isPending}>
+                    <Button className="text-white flex-grow" type="submit" disabled={isPending}>
                         <Upload size={20} />&nbsp;Actualizar Partido
                     </Button>
-
-                    
                 </div>
             </form>
         </Form>

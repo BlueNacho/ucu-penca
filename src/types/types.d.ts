@@ -25,10 +25,10 @@ export interface MatchDisplayed {
     start_time: string;
     phase: number;
     phase_name: string;
-    group_name: string | null;
+    group_name: "A" | "B" | "C" | "D" | "";
     status: MatchStatus;
-    prediction_home_team_goals: number | null;
-    prediction_away_team_goals: number | null;
+    prediction_home_team_goals: number | undefined;
+    prediction_away_team_goals: number | undefined;
 }
 
 export type User = {
@@ -53,16 +53,7 @@ export type Team = {
     group_score: string;
 };
 
-export type Match = {
-    id: string;
-    date: string;
-    team1_id: string;
-    team2_id: string;
-    team1_goals: number;
-    team2_goals: number;
-    group: string;
-    phase: string;
-};
+
 
 export type Prediction = {
     user_id: string;

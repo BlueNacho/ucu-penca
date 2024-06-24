@@ -43,7 +43,9 @@ const seedDatabase = async () => {
         name VARCHAR(255) NOT NULL,
         code VARCHAR(4) NOT NULL,
         group_name group_name NOT NULL,
-        group_score INT DEFAULT 0
+        group_score INT DEFAULT 0,
+        champion BOOLEAN DEFAULT FALSE,
+        runner_up BOOLEAN DEFAULT FALSE
       );
     `);
 

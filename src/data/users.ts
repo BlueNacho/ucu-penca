@@ -2,6 +2,20 @@
 import { User } from "@/types/types";
 import { pool } from "./postgrePool";
 
+export async function getUsers(): Promise<User[]> {
+    const client = await pool.connect();
+
+    try {
+        const users = await client.query("SELECT * FROM users WHERE is_admin = false");
+        return users.rows as User[];
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
 export async function getUserByEmail(email: string): Promise<User | undefined> {
     const client = await pool.connect();
 

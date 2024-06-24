@@ -45,7 +45,7 @@ export async function getMatchesDisplayed(userId: string): Promise<MatchDisplaye
     }
 }
 
-export async function getAdminMatchById(matchId: string): Promise<MatchDisplayed> {
+export async function getMatchById(matchId: string): Promise<MatchDisplayed> {
     const client = await pool.connect();
 
     try {

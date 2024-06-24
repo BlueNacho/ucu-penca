@@ -9,13 +9,17 @@ import { MatchDisplayed, User } from "@/types/types";
 import { formatDateToLocal } from "@/lib/utils";
 import { getSession } from "@/lib/auth-utils";
 import Link from "next/link";
-import clsx from "clsx";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { SquarePlus } from "lucide-react";
+import DrawerMatch from "@/components/drawer-match";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import CardMatch from "@/components/card-match";
 
 export default async function Page() {
 
@@ -23,104 +27,70 @@ export default async function Page() {
     const isAdmin = session.user?.is_admin
     const matches: MatchDisplayed[] = await getMatchesDisplayed(session.user?.id);
 
+    const finishedMatches = [...matches].filter(match => match.status === "finalizado");
+    const pendingMatches = [...matches].filter(match => match.status === "pendiente");
+    const playingMatches = [...matches].filter(match => match.status === "jugándose");
+
     return (
         <div className="w-full">
-            <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
-                {matches.map((match, index) => (
-                    <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `/partidos/${match.id}/ver`} key={index}>
-                        <Card key={index} className={clsx("h-max transition-all xl:hover:scale-[101%] focus:scale-[100%] group relative",
-                            match.status === "finalizado" ? "border-emerald-600" : match.status === "jugándose" ? "border-primary" : "active:border-primary xl:hover:border-primary"
-                        )}>
-                            <span className={clsx("absolute right-0",
-                                match.status === "finalizado" ? "bg-emerald-600" : match.status === "jugándose" ? "bg-primary" : "bg-gray-500",
-                                "text-white text-xs font-semibold px-2 rounded-bl-md rounded-tr-md"
-                            )}>{match.status}</span>
-                            <CardContent className="py-3 px-8 flex flex-row justify-between items-center">
-                                <div className="flex flex-col items-center justify-center w-1/3">
-                                    <div className="flex flex-col items-center gap-1">
-                                        <Image src={`https://flagcdn.com/${match.home_team_code}.svg`}
-                                            alt="Team Image"
-                                            width={1920}
-                                            height={1080}
-                                            priority
-                                            className="object-cover object-center rounded-lg w-16 h-12 shadow-md"
-                                        />
-                                        <span className="font-semibold tracking-wide text-sm lg:text-md text-nowrap">{match.home_team_name}</span>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col items-center w-1/3 gap-2">
-                                    {match.status === "jugándose" || match.status === "finalizado" ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <span className={clsx("text-xl font-semibold text-white px-2 rounded-sm",
-                                                        match.status === "jugándose" && "bg-primary",
-                                                        match.status === "finalizado" && "bg-emerald-600"
-                                                    )}>{match.home_team_goals} - {match.away_team_goals}</span>
-                                                </TooltipTrigger>
-                                                <TooltipContent className={clsx("font-bold border-none",
-                                                    match.status === "jugándose" && "bg-primary",
-                                                    match.status === "finalizado" && "bg-emerald-600"
-                                                )}>
-                                                    <p>Resultado del partido</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
 
 
-                                    ) : (
-                                        <span className="text-4xl font-black bg-clip-text text-transparent rounded-xl text-center bg-gradient-to-tr from-blue-600 to-blue-400">VS</span>
-                                    )}
-                                    {match.prediction_away_team_goals !== null && match.prediction_home_team_goals !== null ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <span className="text-sm font-semibold text-white bg-primary/30 px-2 rounded-sm">{match.prediction_home_team_goals} - {match.prediction_away_team_goals}</span>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>Tú predicción</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
+            <Tabs defaultValue="pendiente" className="w-full flex flex-col ">
+                <div className="flex flex-col md:flex-row justify-center items-center w-full mb-2 gap-2 md:gap-6">
+                    <TabsList className="w-max ">
+                        <TabsTrigger value="pendiente">Próximos</TabsTrigger>
+                        <TabsTrigger value="jugándose">Jugándose</TabsTrigger>
+                        <TabsTrigger value="finalizado">Finalizados</TabsTrigger>
+                    </TabsList>
 
+                    {isAdmin &&
+                        <Link href={`/admin/partidos/crear`}>
+                            <Button className="w-[290px] text-white bg-primary/20">
+                                <SquarePlus size={20} />
+                                &nbsp;
+                                Crear Partido
+                            </Button>
+                        </Link>
+                    }
+                </div>
 
-                                    ) : (
-                                        <span className="dark:text-white p-1.5 h-max rounded-md bg-primary/20 xl:group-hover:bg-primary transition-all group-active:bg-primary text-xs">
-                                            {isAdmin ? "Actualizar" : "Predecir"}
-                                        </span>
-                                    )}
-
-                                </div>
-
-                                <div className="flex flex-col items-center justify-center w-1/3">
-                                    <div className="flex flex-col items-center gap-1">
-                                        <Image src={`https://flagcdn.com/${match.away_team_code}.svg`}
-                                            alt="Team Image"
-                                            width={1920}
-                                            height={1080}
-                                            priority
-                                            className="object-cover object-center rounded-lg w-16 h-12 shadow-md"
-                                        />
-                                        <span className="font-semibold tracking-wide text-sm lg:text-md text-nowrap">{match.away_team_name}</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-
-                            <CardFooter className="border-t px-4 py-1 flex flex-row justify-between text-sm font-semibold rounded-b-md bg-primary/20">
-                                <span>{formatDateToLocal(match.start_time)}hs</span>
-
-                                <div className="text-nowrap">
-                                    <span className="uppercase">GRUPO {match["group_name"]}</span>
-                                    <span>&nbsp; - &nbsp;</span>
-                                    <span className="uppercase">{match.phase_name}</span>
-                                </div>
-                            </CardFooter>
-                        </Card>
-                    </Link>
-                ))
-                }
-            </div >
+                <TabsContent value="pendiente" className="text-center">
+                    {pendingMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos pendientes por el momento</p>}
+                    <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
+                        {pendingMatches.map((match, index) => (
+                            <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>
+                                <DrawerMatch match={match} isAdmin={isAdmin} status={match.status}>
+                                    <CardMatch match={match} isAdmin={isAdmin} />
+                                </DrawerMatch>
+                            </Link>
+                        ))}
+                    </div>
+                </TabsContent>
+                <TabsContent value="jugándose" className="text-center">
+                    {playingMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos jugándose por el momento</p>}
+                    <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
+                        {playingMatches.map((match, index) => (
+                            <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>
+                                <DrawerMatch match={match} isAdmin={isAdmin} status={match.status}>
+                                    <CardMatch match={match} isAdmin={isAdmin} />
+                                </DrawerMatch>
+                            </Link>
+                        ))}
+                    </div>
+                </TabsContent>
+                <TabsContent value="finalizado">
+                    {finishedMatches.length === 0 && <p className="md:text-lg mx-auto font-light bg-primary/20 px-4 rounded-sm w-max">No hay partidos finalizados por el momento</p>}
+                    <div className="flex flex-col max-h-full gap-6 md:grid md:grid-cols-2">
+                        {finishedMatches.map((match, index) => (
+                            <Link href={isAdmin ? `/admin/partidos/${match.id}/editar` : `#`} key={index}>
+                                <DrawerMatch match={match} isAdmin={isAdmin} status={match.status}>
+                                    <CardMatch match={match} isAdmin={isAdmin} />
+                                </DrawerMatch>
+                            </Link>
+                        ))}
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

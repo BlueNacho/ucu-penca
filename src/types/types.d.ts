@@ -27,8 +27,9 @@ export interface MatchDisplayed {
     phase_name: string;
     group_name: "A" | "B" | "C" | "D" | "";
     status: MatchStatus;
-    prediction_home_team_goals: number | undefined;
-    prediction_away_team_goals: number | undefined;
+    prediction_home_team_goals?: number ;
+    prediction_away_team_goals?: number ;
+    prediction_score?: number;
 }
 
 export type User = {

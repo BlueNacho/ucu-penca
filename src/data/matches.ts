@@ -64,7 +64,8 @@ export async function getMatchesDisplayed(userId: string): Promise<MatchDisplaye
                 m.group_name,
                 m.status,
                 pr.home_team_goals AS prediction_home_team_goals,
-                pr.away_team_goals AS prediction_away_team_goals
+                pr.away_team_goals AS prediction_away_team_goals,
+                pr.score AS prediction_score
             FROM matches m
             JOIN teams ht ON m.home_team_id = ht.id
             JOIN teams at ON m.away_team_id = at.id

@@ -49,7 +49,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
-    const [isFinalModeEnabled, enableFinalMode] = useState(false);
+    const [finalMode, setFinalMode] = useState(false);
+    const [confirmationModalEnabled, setConfirmationModal] = useState(false);
 
     const form = useForm<z.infer<typeof UpdateMatchSchema>>({
         resolver: zodResolver(UpdateMatchSchema),
@@ -93,7 +94,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                 phase: false,
                 start_time: false,
             });
-            enableFinalMode(false);
+            setConfirmationModal(false);
+            setFinalMode(false);
             form.setValue("champion", "");
             form.setValue("runnerUp", "");
         } else if (status === 'jugándose') {
@@ -106,7 +108,8 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                 phase: true,
                 start_time: true,
             });
-            enableFinalMode(false);
+            setConfirmationModal(false);
+            setFinalMode(false);
             form.setValue("champion", "");
             form.setValue("runnerUp", "");
         } else if (status === 'finalizado') {
@@ -119,8 +122,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                 phase: true,
                 start_time: true,
             });
+            setConfirmationModal(true);
             if (phase === "6") {
-                enableFinalMode(true);
+                setFinalMode(true);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +133,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
     const onSubmit = (values: z.infer<typeof UpdateMatchSchema>): void => {
         setError("");
         setSuccess("");
-        
+
         startTransition(() => {
             updateMatch(matchId, values)
                 .then((data) => {
@@ -329,7 +333,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                 />
 
                 <div className={clsx("grid grid-cols-2 border gap-2 p-3 bg-primary/5 rounded-lg",
-                    !isFinalModeEnabled && "hidden"
+                    !finalMode && "hidden"
                 )}>
                     <FormField
                         control={form.control}
@@ -340,7 +344,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                                 <FormControl>
                                     <SelectCountry field={field} teams={finalistTeams} />
                                 </FormControl>
-                                <FormMessage className="text-white"/>
+                                <FormMessage className="text-white" />
                             </FormItem>
                         )}
                     />
@@ -354,7 +358,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                                 <FormControl>
                                     <SelectCountry field={field} teams={finalistTeams} />
                                 </FormControl>
-                                <FormMessage/>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
@@ -382,9 +386,32 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                         </AlertDialogContent>
                     </AlertDialog>
 
-                    <Button className="text-white flex-grow" type="submit" disabled={isPending}>
-                        <Upload size={20} />&nbsp;Actualizar Partido
-                    </Button>
+                    {confirmationModalEnabled ? (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button className="text-white flex-grow" type="button" disabled={isPending}>
+                                    <Upload size={20} />&nbsp;Actualizar Partido
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Esta acción borrará el partido. <br />
+                                        <strong className="text-destructive">Esta acción no se podrá deshacer.</strong>
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <Button className="text-white" onClick={form.handleSubmit(onSubmit)} >Confirmar</Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    ) : (
+                        <Button className="text-white flex-grow" type="submit" disabled={isPending}>
+                            <Upload size={20} />&nbsp;Actualizar Partido
+                        </Button>
+                    )}
                 </div>
             </form>
         </Form>

@@ -29,14 +29,14 @@ export default async function Page() {
         <div className="flex flex-col items-center justify-center pb-3">
             {!isAdmin ?
                 (
-                    <span className="flex w-full py-2 px-4 bg-primary rounded-t-md">
-                        <span className="font-semibold">Posición {rank.rank} ({rank.score}pts)</span>
-                        <span className="ml-auto font-semibold">{scoreboard.length} Miembros</span>
+                    <span className="flex w-full py-2 px-4 bg-primary rounded-t-md ">
+                        <span className="font-semibold text-white">Posición {rank.rank} ({rank.score}pts)</span>
+                        <span className="ml-auto font-semibold text-white">{scoreboard.length} Miembros</span>
                     </span>
                 ) : (
                     <span className="flex w-full py-2 px-4 bg-primary rounded-t-md">
                         <span className="font-semibold text-white">Ranking de Usuarios</span>
-                        <span className="ml-auto font-semibold">{scoreboard.length} Miembros</span>
+                        <span className="ml-auto font-semibold text-white">{scoreboard.length} Miembros</span>
                     </span>
                 )
             }

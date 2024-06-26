@@ -1,6 +1,6 @@
 import Image from "next/image"
 import BackgroundImage from "../../../public/auth-background.jpg"
-import Logo from "@/components/Logo";
+import Logo from "@/components/logo";
 
 export default function Layout({
     children,
@@ -9,7 +9,10 @@ export default function Layout({
 }) {
     return (
         <main className="w-full h-screen lg:grid lg:min-h-[400px] lg:grid-cols-2">
-            <div className="flex h-full bg-neutral-100 dark:bg-background items-center justify-center py-12">
+            <div className="lg:hidden h-16 flex justify-center items-center lg:justify-start w-full lg:w-[60%] xl:w-[50%] lg:max-w-6xl lg:mx-auto py-2 border-b">
+                <Logo />
+            </div>
+            <div className="flex h-full bg-neutral-100 dark:bg-background items-start lg:items-center justify-center py-8">
                 {children}
             </div>
             <div className="hidden lg:flex relative overflow-hidden items-center justify-center">

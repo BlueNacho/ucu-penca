@@ -6,6 +6,7 @@ import { pool } from "@/data/postgrePool";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { calculateScoresByMatchId } from "./admin";
+import { getMatchById } from "@/data/matches";
 
 
 export async function createMatch(values: z.infer<typeof CreateMatchSchema>) {
@@ -63,6 +64,12 @@ export async function updateMatch(matchId: string, values: z.infer<typeof Update
         return { error: "Campos invalidos" };
     }
 
+    const match = await getMatchById(matchId);
+
+    if(match.status === "finalizado") {
+        return { error: "No puedes editar un partido que ya ha finalizado" };
+    }
+
     const { home_team_id, away_team_id, home_team_goals, away_team_goals, group_name, phase, start_time, status, champion, runnerUp } = validatedFields.data;
 
     let group_name_conditional: string | null;
@@ -111,6 +118,12 @@ export async function updateMatch(matchId: string, values: z.infer<typeof Update
 
 export async function deleteMatch(matchId: string) {
     const client = await pool.connect();
+
+    const match = await getMatchById(matchId);
+
+    if(match.status === "finalizado") {
+        return { error: "No puedes eliminar un partido que ya ha finalizado" };
+    }
 
     try {
         await client.query('BEGIN');

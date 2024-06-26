@@ -30,8 +30,11 @@ export async function login(values: z.infer<typeof LoginSchema>) {
         return { error: "Contraseña incorrecta" };
     }
 
+    // Remove the password from the user object
+    const { password: userPassword, ...userWithoutPassword } = user;
+
     // Create the session
-    const session = await encrypt({ user });
+    const session = await encrypt({ user: userWithoutPassword });
 
     // Save the session in a cookie
     cookies().set("session", session, { httpOnly: true });

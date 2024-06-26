@@ -51,6 +51,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
     const [isPending, startTransition] = useTransition();
     const [finalMode, setFinalMode] = useState(false);
     const [confirmationModalEnabled, setConfirmationModal] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const form = useForm<z.infer<typeof UpdateMatchSchema>>({
         resolver: zodResolver(UpdateMatchSchema),
@@ -137,6 +138,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
         startTransition(() => {
             updateMatch(matchId, values)
                 .then((data) => {
+                    setOpen(false)
                     setError(data.error);
                     setSuccess(data.success);
                 });
@@ -149,6 +151,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
 
         startTransition(() => {
             deleteMatch(matchId)
+                .then((data) => {
+                    setError(data.error);
+                });
         });
     }
 
@@ -316,7 +321,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                         <FormItem>
                             <FormLabel>Estado</FormLabel>
                             <FormControl>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} disabled={match.status === "finalizado"}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Seleccione estado" />
                                     </SelectTrigger>
@@ -332,42 +337,10 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                     )}
                 />
 
-                <div className={clsx("grid grid-cols-2 border gap-2 p-3 bg-primary/5 rounded-lg",
-                    !finalMode && "hidden"
-                )}>
-                    <FormField
-                        control={form.control}
-                        name="champion"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel htmlFor="champion">&#x1f3c6; Campeón</FormLabel>
-                                <FormControl>
-                                    <SelectCountry field={field} teams={finalistTeams} />
-                                </FormControl>
-                                <FormMessage className="text-white" />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="runnerUp"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel htmlFor="runnerUp">&#x1f948; Sub-campeón</FormLabel>
-                                <FormControl>
-                                    <SelectCountry field={field} teams={finalistTeams} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-
                 <div className="flex flex-row gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button type="button" variant="destructive" size="icon" className="text-white flex-shrink" disabled={isPending}>
+                            <Button type="button" variant="destructive" size="icon" className="text-white flex-shrink" disabled={isPending || match.status === "finalizado"}>
                                 <Trash2 size={20} />
                             </Button>
                         </AlertDialogTrigger>
@@ -387,18 +360,54 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                     </AlertDialog>
 
                     {confirmationModalEnabled ? (
-                        <AlertDialog>
+                        <AlertDialog open={open} onOpenChange={setOpen}>
                             <AlertDialogTrigger asChild>
-                                <Button className="text-white flex-grow" type="button" disabled={isPending}>
+                                <Button className="text-white flex-grow" type="button" disabled={isPending || match.status === "finalizado"}>
                                     <Upload size={20} />&nbsp;Actualizar Partido
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Esta acción borrará el partido. <br />
-                                        <strong className="text-destructive">Esta acción no se podrá deshacer.</strong>
+                                    <AlertDialogDescription className="flex flex-col gap-2">
+                                        <div>
+                                            Esta acción dará por finalizado el partido y calculara todas las predicciones asociadas. <br />
+                                            <strong className="text-destructive">Esta acción no se podrá deshacer y el partido no se podrá volver a modificar.</strong>
+                                        </div>
+                                        <div className={clsx("flex flex-col gap-2 p-2 rounded-lg border border-amber-500",
+                                            !finalMode && "hidden"
+                                        )}>
+                                            <span className="text-amber-500 font-medium">Es necesario especificar el campeón y sub-campeón para finalizar un partido de fase Final</span>
+                                            <div className="grid grid-cols-2 border gap-2 p-3 bg-primary/5 rounded-lg">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="champion"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel htmlFor="champion">&#x1f3c6; Campeón</FormLabel>
+                                                            <FormControl>
+                                                                <SelectCountry field={field} teams={finalistTeams} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="runnerUp"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel htmlFor="runnerUp">&#x1f948; Sub-campeón</FormLabel>
+                                                            <FormControl>
+                                                                <SelectCountry field={field} teams={finalistTeams} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -408,7 +417,7 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                             </AlertDialogContent>
                         </AlertDialog>
                     ) : (
-                        <Button className="text-white flex-grow" type="submit" disabled={isPending}>
+                        <Button className="text-white flex-grow" type="submit" disabled={isPending || match.status === "finalizado"}>
                             <Upload size={20} />&nbsp;Actualizar Partido
                         </Button>
                     )}

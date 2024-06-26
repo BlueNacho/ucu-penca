@@ -57,10 +57,11 @@ export function CardMatch({ match, isAdmin }: { match: MatchDisplayed, isAdmin: 
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 {match.prediction_away_team_goals !== null && match.prediction_home_team_goals !== null ? (
-                                                    <span className={clsx("text-sm font-semibold text-white bg-primary/30 px-2 rounded-sm",
+                                                    <span className={clsx("text-sm font-semibold text-white px-2 rounded-sm",
                                                         match.prediction_score === 4 && match.status === "finalizado" && "bg-emerald-600",
                                                         match.prediction_score === 2 && match.status === "finalizado" && "bg-amber-600",
                                                         match.prediction_score === 0 && match.status === "finalizado" && "bg-red-700",
+                                                        (match.status === "pendiente" || match.status === "jugándose") && "bg-primary/30",
                                                     )}>
                                                         {match.prediction_home_team_goals} - {match.prediction_away_team_goals}
                                                     </span>

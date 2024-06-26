@@ -203,7 +203,9 @@ export default function UpdateMatchForm({ matchId, match, teams, phases }: { mat
                         />
                     </div>
 
-                    <div className="flex flex-col items-center gap-1 bg-gradient-to-tr from-primary/30 to-primary/80 p-2 rounded-lg">
+                    <div className={clsx("flex flex-col items-center gap-1 bg-gradient-to-tr from-primary/30 to-primary/80 p-2 rounded-lg",
+                        disabledFields.home_team_goals && "opacity-50"
+                    )}>
                         <span className="text-card-foreground uppercase font-black tracking-wider">Marcador</span>
 
                         <div className="flex flex-row gap-2 items-center">

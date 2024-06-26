@@ -108,15 +108,15 @@ export function CardMatch({ match, isAdmin }: { match: MatchDisplayed, isAdmin: 
                 {match.status === "finalizado" && !isAdmin ? (
                     <>
                         {match.prediction_score === 4 &&
-                            <Badge className="bg-emerald-600 text-white">Resultado exacto</Badge>
+                            <Badge className="bg-emerald-600 text-white text-nowrap">Resultado exacto</Badge>
                         }
 
                         {match.prediction_score === 2 &&
-                            <Badge className="bg-amber-600 text-white">Resultado correcto</Badge>
+                            <Badge className="bg-amber-600 text-white text-nowrap">Resultado correcto</Badge>
                         }
 
                         {match.prediction_score === 0 &&
-                            <Badge className="bg-red-700 text-white">Resultado incorrecto</Badge>
+                            <Badge className="bg-red-700 text-white text-nowrap">Resultado incorrecto</Badge>
                         }
 
                         {match.prediction_score === null &&

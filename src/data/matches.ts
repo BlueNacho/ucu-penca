@@ -1,4 +1,3 @@
-// fetchMatchesWithPredictions.ts
 'use server';
 
 import { MatchDisplayed } from "../types/types";

@@ -35,7 +35,7 @@ export default async function Page() {
                     </span>
                 ) : (
                     <span className="flex w-full py-2 px-4 bg-primary rounded-t-md">
-                        <span className="font-semibold">Ranking de Usuarios</span>
+                        <span className="font-semibold text-white">Ranking de Usuarios</span>
                         <span className="ml-auto font-semibold">{scoreboard.length} Miembros</span>
                     </span>
                 )

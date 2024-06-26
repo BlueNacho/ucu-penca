@@ -29,6 +29,7 @@ export async function decrypt(input: string): Promise<any> {
 export async function logout() {
     // Destroy the session
     cookies().set("session", "", { expires: new Date(0) });
+    redirect("/");
 }
 
 export async function getSession() {

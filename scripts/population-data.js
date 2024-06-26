@@ -40,8 +40,8 @@ const teams = [
 
 const users = [
   {
-    first_name: "Admin",
-    last_name: "Admin",
+    first_name: "Adam",
+    last_name: "Adamson",
     email: "admin@example.com",
     password: "securepassword",
     career: null,
@@ -50,8 +50,8 @@ const users = [
     is_admin: true,
   },
   {
-    first_name: "User",
-    last_name: "User",
+    first_name: "John",
+    last_name: "Doe",
     email: "user@example.com",
     password: "password",
     career: 4,

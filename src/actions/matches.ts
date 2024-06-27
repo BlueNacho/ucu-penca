@@ -6,7 +6,7 @@ import { pool } from "@/data/postgrePool";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { calculateScoresByMatchId } from "./admin";
-import { getMatchById } from "@/data/matches";
+import { getMatchById, getMatchesFixture } from "@/data/matches";
 
 
 export async function createMatch(values: z.infer<typeof CreateMatchSchema>) {
@@ -15,6 +15,8 @@ export async function createMatch(values: z.infer<typeof CreateMatchSchema>) {
     if (!validatedFields.success) {
         return { error: "Campos invalidos" };
     }
+
+    getMatchesFixture();
 
     const { home_team_id, away_team_id, group_name, phase, start_time, status } = validatedFields.data;
 

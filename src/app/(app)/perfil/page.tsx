@@ -29,6 +29,7 @@ import { getRankAndScoreById } from "@/data/users";
 import { getPredictionsDisplayed } from "@/data/predictions";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CardMatch } from "@/components/card-match";
+import Link from "next/link";
 
 function parseInitials(name: string, lastname: string) {
     const nameInitial = name ? name[0].toUpperCase() : '';
@@ -170,13 +171,19 @@ export default async function Page() {
                                         </span>
                                     </div>
                                     <h1 className="text-lg mt-4">Mis predicciones</h1>
-                                    <ScrollArea className="w-full h-56 mt-2 bg-primary/30 p-2 rounded-md">
-                                        <div className="flex flex-col gap-2">
-                                            {userPredictions?.map((prediction, index) => (
-                                                <CardMatch key={index} match={prediction} isAdmin={isAdmin} />
-                                            ))}
-                                        </div>
-                                    </ScrollArea>
+                                    {userPredictions && userPredictions.length ?
+                                        (
+                                            <ScrollArea className="w-full h-56 mt-2 bg-card/70 border p-2 rounded-md">
+                                                <div className="flex flex-col gap-2">
+                                                    {userPredictions?.map((prediction, index) => (
+                                                        <CardMatch key={index} match={prediction} isAdmin={isAdmin} />
+                                                    ))}
+                                                </div>
+                                            </ScrollArea>
+                                        ) : (
+                                        <p className="italic text-foreground/30">Aún no tenés predicciones <Link href={'/partidos'} className="text-primary underline">¡Ve y apuesta a tu suerte!</Link></p>
+                                        )
+                                    }
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>

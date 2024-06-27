@@ -1,23 +1,35 @@
 ## Como empezar
 
-1. Primer paso, entrar a `.env.example`, renombrar el archivo a `.env` y completar los datos:
+1. Entrar a `.env.example`, renombrar el archivo a `.env` y completar los datos:
 
 ```bash
-POSTGRES_URL="YOUR POSTGRES URL"
-POSTGRES_USER="YOUR POSTGRES USER"
-POSTGRES_PASSWORD="YOUR POSTGRES PASSWORD"
-POSTGRES_DATABASE="YOUR POSTGRES DATABASE NAME"
+DATABASE_URL=""
+DATABASE_HOST= ""
+DATABASE_NAME= ""
+DATABASE_USER= ""
+DATABASE_PASSWORD= ""
+AUTH_SECRET=""
 ```
 
-2. Segundo paso, levantar Docker:
+2. Levantar la base de datos en Docker:
 
 ```bash
-docker compose up
+docker compose up -d db
 ```
 
-3. Tercer paso, popular la base de datos desde la aplicación web
+3. Instalar dependencias de la aplicación web
+```bash
+npm i
+```
+
+4. Popular la base de datos con los datos de prueba desde la teminal la aplicación web
 ```bash
 npm run seed
+```
+
+5. Correr la aplicación
+```bash
+npm run dev
 ```
 
 La aplicación web se abre por defecto en [http://localhost:3000](http://localhost:3000).
